@@ -1,14 +1,32 @@
 import yfinance as yf
 import pandas as pd
 from datetime import datetime, timedelta
-from typing import Optional
 import logging
+import os
+import random
 
 logger = logging.getLogger(__name__)
 
 # Simple in-memory cache with 15-minute TTL
 _cache: dict[str, tuple[datetime, any]] = {}
 CACHE_TTL_MINUTES = 15
+
+# Use mock data if yfinance is rate-limited (set MOCK_DATA=true in .env for dev)
+USE_MOCK = os.getenv('MOCK_DATA', 'false').lower() == 'true'
+
+# Realistic mock prices for common ETFs
+MOCK_PRICES: dict[str, dict] = {
+    'VWRL.L': {'price': 112.50, 'currency': 'GBP', 'name': 'Vanguard FTSE All-World UCITS ETF'},
+    'VUSA.L': {'price': 98.72, 'currency': 'GBP', 'name': 'Vanguard S&P 500 UCITS ETF'},
+    'CSPX.L': {'price': 562.10, 'currency': 'USD', 'name': 'iShares Core S&P 500 UCITS ETF'},
+    'VWRP.L': {'price': 114.20, 'currency': 'GBP', 'name': 'Vanguard FTSE All-World UCITS ETF (Acc)'},
+    'IWDG.L': {'price': 68.34, 'currency': 'GBP', 'name': 'iShares Edge MSCI World Value Factor UCITS ETF'},
+    'EQQQ.L': {'price': 394.82, 'currency': 'USD', 'name': 'Invesco EQQQ NASDAQ-100 UCITS ETF'},
+    'SPY':    {'price': 568.40, 'currency': 'USD', 'name': 'SPDR S&P 500 ETF Trust'},
+    'QQQ':    {'price': 484.20, 'currency': 'USD', 'name': 'Invesco QQQ Trust'},
+    'VTI':    {'price': 280.15, 'currency': 'USD', 'name': 'Vanguard Total Stock Market ETF'},
+    'VXUS':   {'price': 62.48, 'currency': 'USD', 'name': 'Vanguard Total International Stock ETF'},
+}
 
 
 def _cache_get(key: str):
@@ -24,16 +42,71 @@ def _cache_set(key: str, value):
     _cache[key] = (datetime.now(), value)
 
 
-def _normalise_ticker(ticker: str) -> str:
-    """Append .L for LSE tickers if not already present and not a US ticker."""
-    ticker = ticker.upper().strip()
-    return ticker
+def _mock_quote(ticker: str) -> dict:
+    """Return a mock quote with realistic-ish values."""
+    base = MOCK_PRICES.get(ticker.upper(), {
+        'price': round(random.uniform(50, 500), 2),
+        'currency': 'USD',
+        'name': ticker,
+    })
+    price = base['price']
+    # Add small random daily fluctuation ±1.5%
+    day_change_pct = random.uniform(-1.5, 1.5)
+    day_change = round(price * day_change_pct / 100, 4)
+    return {
+        'ticker': ticker,
+        'name': base['name'],
+        'currentPrice': round(price, 4),
+        'previousClose': round(price - day_change, 4),
+        'dayChange': round(day_change, 4),
+        'dayChangePercent': round(day_change_pct, 4),
+        'currency': base['currency'],
+        'marketCap': None,
+        'mock': True,
+    }
+
+
+def _fetch_quote_yfinance(ticker: str) -> dict:
+    """Fetch a single ticker quote using yfinance history endpoint."""
+    t = yf.Ticker(ticker)
+    hist = t.history(period='5d')
+    if hist.empty:
+        raise ValueError(f"No data returned for {ticker}")
+
+    close = hist['Close'].dropna()
+    if len(close) < 1:
+        raise ValueError(f"No close prices for {ticker}")
+
+    current_price = float(close.iloc[-1])
+    prev_close = float(close.iloc[-2]) if len(close) >= 2 else current_price
+    day_change = current_price - prev_close
+    day_change_pct = (day_change / prev_close * 100) if prev_close else 0
+
+    # Attempt to get metadata
+    name = ticker
+    currency = 'USD'
+    try:
+        fi = t.fast_info
+        currency = getattr(fi, 'currency', 'USD') or 'USD'
+    except Exception:
+        pass
+
+    return {
+        'ticker': ticker,
+        'name': name,
+        'currentPrice': round(current_price, 4),
+        'previousClose': round(prev_close, 4),
+        'dayChange': round(day_change, 4),
+        'dayChangePercent': round(day_change_pct, 4),
+        'currency': currency,
+        'marketCap': None,
+    }
 
 
 def get_quotes(tickers: list[str]) -> dict:
     """
     Fetch live quote data for a list of tickers.
-    Returns dict keyed by ticker with price, day change, etc.
+    Falls back to mock data if yfinance is unavailable.
     """
     cache_key = f"quotes:{'|'.join(sorted(tickers))}"
     cached = _cache_get(cache_key)
@@ -41,48 +114,17 @@ def get_quotes(tickers: list[str]) -> dict:
         return cached
 
     result = {}
+
     for ticker in tickers:
+        if USE_MOCK:
+            result[ticker] = _mock_quote(ticker)
+            continue
+
         try:
-            t = yf.Ticker(ticker)
-            info = t.info
-            fast_info = t.fast_info
-
-            current_price = (
-                fast_info.get('last_price') or
-                info.get('regularMarketPrice') or
-                info.get('currentPrice') or
-                info.get('previousClose', 0)
-            )
-            prev_close = (
-                fast_info.get('previous_close') or
-                info.get('previousClose', current_price)
-            )
-            day_change = current_price - prev_close if current_price and prev_close else 0
-            day_change_pct = (day_change / prev_close * 100) if prev_close else 0
-
-            result[ticker] = {
-                'ticker': ticker,
-                'name': info.get('longName') or info.get('shortName') or ticker,
-                'currentPrice': round(current_price, 4) if current_price else 0,
-                'previousClose': round(prev_close, 4) if prev_close else 0,
-                'dayChange': round(day_change, 4),
-                'dayChangePercent': round(day_change_pct, 4),
-                'currency': info.get('currency', 'USD'),
-                'marketCap': info.get('marketCap'),
-            }
+            result[ticker] = _fetch_quote_yfinance(ticker)
         except Exception as e:
-            logger.warning(f"Failed to fetch quote for {ticker}: {e}")
-            result[ticker] = {
-                'ticker': ticker,
-                'name': ticker,
-                'currentPrice': 0,
-                'previousClose': 0,
-                'dayChange': 0,
-                'dayChangePercent': 0,
-                'currency': 'USD',
-                'marketCap': None,
-                'error': str(e),
-            }
+            logger.warning(f"yfinance failed for {ticker}: {e} — using mock fallback")
+            result[ticker] = _mock_quote(ticker)
 
     _cache_set(cache_key, result)
     return result
@@ -107,7 +149,7 @@ def get_history(tickers: list[str], period: str = '1y') -> dict:
         result = {
             'dates': [d.strftime('%Y-%m-%d') for d in close.index],
             'prices': {
-                ticker: close[ticker].fillna(method='ffill').tolist()
+                ticker: [None if pd.isna(v) else round(float(v), 4) for v in close[ticker].tolist()]
                 for ticker in close.columns
                 if ticker in tickers
             }
