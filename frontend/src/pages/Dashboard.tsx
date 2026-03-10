@@ -20,7 +20,7 @@ function SummaryCard({
     isPositive === undefined ? '#00D4FF' : isPositive ? '#00FF94' : '#FF4D4D';
   return (
     <div
-      className="rounded-xl p-6 transition-all duration-150 hover:glow-cyan"
+      className="rounded-xl p-8 transition-all duration-150 hover:glow-cyan"
       style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
     >
       <div className="flex items-center justify-between mb-4">

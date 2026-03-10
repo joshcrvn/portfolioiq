@@ -28,7 +28,7 @@ export default function App() {
           <div className="w-16 lg:w-56 flex-shrink-0" />
           <div className="flex-1 min-w-0 flex flex-col">
             <Navbar />
-            <main className="flex-1 px-4 lg:px-6 pb-6" style={{ paddingTop: '80px' }}>
+            <main className="flex-1 px-8 lg:px-10 pb-8" style={{ paddingTop: '80px' }}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/holdings" element={<Holdings />} />
