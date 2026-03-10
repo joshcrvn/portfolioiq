@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { RefreshCw, Plus } from 'lucide-react';
+import { RefreshCw, Plus, Upload } from 'lucide-react';
 import { AddHoldingModal } from '../portfolio/AddHoldingModal';
+import { CSVUploadModal } from '../portfolio/CSVUploadModal';
 
 interface NavbarProps {
   onRefresh?: () => void;
@@ -9,6 +10,7 @@ interface NavbarProps {
 
 export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showCSVModal, setShowCSVModal] = useState(false);
 
   return (
     <>
@@ -29,11 +31,7 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
               onClick={onRefresh}
               disabled={isRefreshing}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150 disabled:opacity-50"
-              style={{
-                backgroundColor: '#161B22',
-                color: '#8B949E',
-                border: '1px solid #30363D',
-              }}
+              style={{ backgroundColor: '#161B22', color: '#8B949E', border: '1px solid #30363D' }}
             >
               <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
               <span className="hidden sm:inline">Refresh</span>
@@ -41,12 +39,18 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
           )}
 
           <button
+            onClick={() => setShowCSVModal(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150"
+            style={{ backgroundColor: '#161B22', color: '#8B949E', border: '1px solid #30363D' }}
+          >
+            <Upload size={14} />
+            <span className="hidden sm:inline">Import CSV</span>
+          </button>
+
+          <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150"
-            style={{
-              background: 'linear-gradient(135deg, #00FF94, #00D4FF)',
-              color: '#0F1117',
-            }}
+            style={{ background: 'linear-gradient(135deg, #00FF94, #00D4FF)', color: '#0F1117' }}
           >
             <Plus size={14} strokeWidth={2.5} />
             <span className="hidden sm:inline">Add Holding</span>
@@ -54,10 +58,8 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
         </div>
       </header>
 
-      <AddHoldingModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-      />
+      <AddHoldingModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
+      <CSVUploadModal isOpen={showCSVModal} onClose={() => setShowCSVModal(false)} />
     </>
   );
 }
