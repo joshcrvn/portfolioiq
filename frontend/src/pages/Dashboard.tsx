@@ -1,7 +1,9 @@
-import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Activity, Layers } from 'lucide-react';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { HoldingsTable } from '../components/portfolio/HoldingsTable';
+import { PerformanceChart } from '../components/charts/PerformanceChart';
 import { formatCurrency, formatPercent } from '../utils/formatters';
+import { usePortfolioStore } from '../store/portfolioStore';
 
 function SummaryCard({
   label,
@@ -20,7 +22,7 @@ function SummaryCard({
     isPositive === undefined ? '#00D4FF' : isPositive ? '#00FF94' : '#FF4D4D';
   return (
     <div
-      className="rounded-xl p-8 transition-all duration-150 hover:glow-cyan"
+      className="rounded-xl p-8 transition-all duration-150"
       style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
     >
       <div className="flex items-center justify-between mb-4">
@@ -51,6 +53,7 @@ function SummaryCard({
 
 export function Dashboard() {
   const { liveHoldings, summary, isLoading, refetch } = usePortfolio();
+  const holdings = usePortfolioStore((s) => s.holdings);
 
   return (
     <div className="space-y-6 fade-in">
@@ -87,9 +90,12 @@ export function Dashboard() {
         <SummaryCard
           label="HOLDINGS"
           value={String(liveHoldings.length)}
-          icon={DollarSign}
+          icon={Layers}
         />
       </div>
+
+      {/* Performance Chart */}
+      <PerformanceChart holdings={holdings} />
 
       {/* Holdings Table */}
       <div>
