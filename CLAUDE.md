@@ -4,9 +4,9 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 1 of 6 complete + UI polish fixes applied
-- Last commit: `fix(ui): increase metric card padding and page left margin`
-- Frontend builds cleanly, backend starts and serves quotes
+- Phase 2 of 6 complete
+- Last commit: `fix(api): fix MultiIndex check in benchmark endpoint`
+- Frontend builds cleanly, backend serves quotes + history + benchmark
 
 ## Tech Stack
 
@@ -27,41 +27,49 @@ PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add
 portfolioiq/
 ├── frontend/
 │   ├── src/
-│   │   ├── api/client.ts             # Axios instance, BASE_URL from VITE_API_BASE_URL
-│   │   ├── store/portfolioStore.ts   # Zustand store, persisted to localStorage
-│   │   ├── types/index.ts            # All TypeScript types
-│   │   ├── hooks/usePortfolio.ts     # TanStack Query hook for live quotes
-│   │   ├── utils/formatters.ts       # formatCurrency, formatPercent, pnlColor
+│   │   ├── api/client.ts                   # Axios instance, BASE_URL from VITE_API_BASE_URL
+│   │   ├── store/portfolioStore.ts         # Zustand store, persisted to localStorage
+│   │   ├── types/index.ts                  # All TypeScript types
+│   │   ├── hooks/
+│   │   │   ├── usePortfolio.ts             # TanStack Query: live quotes → LiveHolding[]
+│   │   │   └── useBenchmark.ts             # TanStack Query: portfolio vs S&P 500
+│   │   ├── utils/
+│   │   │   ├── formatters.ts               # formatCurrency, formatPercent, pnlColor
+│   │   │   └── csvParser.ts                # Trading 212 CSV → Holding[] parser
 │   │   ├── components/
 │   │   │   ├── layout/Sidebar.tsx
-│   │   │   ├── layout/Navbar.tsx
-│   │   │   ├── portfolio/AddHoldingModal.tsx
-│   │   │   └── portfolio/HoldingsTable.tsx
+│   │   │   ├── layout/Navbar.tsx           # Add Holding + Import CSV buttons
+│   │   │   ├── portfolio/
+│   │   │   │   ├── AddHoldingModal.tsx
+│   │   │   │   ├── CSVUploadModal.tsx      # Drag/drop CSV import, 3-step flow
+│   │   │   │   └── HoldingsTable.tsx
+│   │   │   └── charts/
+│   │   │       └── PerformanceChart.tsx    # Recharts LineChart, period selector, S&P 500 benchmark
 │   │   ├── pages/
-│   │   │   ├── Dashboard.tsx         # Summary cards + HoldingsTable
-│   │   │   ├── Holdings.tsx          # Full holdings management
-│   │   │   ├── Analytics.tsx         # Placeholder (Phase 3)
-│   │   │   ├── RiskMetrics.tsx       # Placeholder (Phase 4)
-│   │   │   ├── News.tsx              # Placeholder (Phase 5)
-│   │   │   └── Alerts.tsx            # Placeholder (Phase 5)
-│   │   ├── App.tsx                   # Router + QueryClient provider
+│   │   │   ├── Dashboard.tsx               # Summary cards + PerformanceChart + HoldingsTable
+│   │   │   ├── Holdings.tsx
+│   │   │   ├── Analytics.tsx               # Placeholder (Phase 3)
+│   │   │   ├── RiskMetrics.tsx             # Placeholder (Phase 4)
+│   │   │   ├── News.tsx                    # Placeholder (Phase 5)
+│   │   │   └── Alerts.tsx                  # Placeholder (Phase 5)
+│   │   ├── App.tsx
 │   │   └── main.tsx
 │   └── package.json
 │
 ├── backend/
 │   ├── app/
-│   │   ├── main.py                   # FastAPI app, CORS, router registration
+│   │   ├── main.py
 │   │   ├── routers/
-│   │   │   ├── portfolio.py          # GET /api/portfolio/quote
+│   │   │   ├── portfolio.py          # GET /quote, /history, /benchmark
 │   │   │   ├── metrics.py            # Placeholder (Phase 4)
 │   │   │   ├── news.py               # Placeholder (Phase 5)
-│   │   │   └── alerts.py             # POST /api/alerts/check (basic)
+│   │   │   └── alerts.py             # POST /api/alerts/check
 │   │   ├── services/
-│   │   │   └── market_data.py        # get_quotes(), get_history(), mock fallback
-│   │   └── models/schemas.py         # Pydantic models
+│   │   │   └── market_data.py        # get_quotes(), get_history(), get_benchmark(), mock fallback
+│   │   └── models/schemas.py
 │   ├── requirements.txt
 │   ├── .env.example
-│   └── venv/                         # Python virtual env (gitignored)
+│   └── venv/
 │
 ├── .gitignore
 └── CLAUDE.md
@@ -93,6 +101,14 @@ portfolioiq/
 - Name enrichment from yfinance is not working in dev (mock mode returns proper names from MOCK_PRICES)
 - `App.css` (Vite default) still exists — can be deleted in cleanup phase
 - `frontend/public/vite.svg` and `frontend/src/assets/react.svg` still present — clean up in Phase 6
+- Recharts bundle adds ~370 KB to JS — acceptable for this project, can code-split in Phase 6 if needed
+
+## Key Architectural Decisions (Phase 2 additions)
+- **CSV import**: Trading 212 format — Ticker, Name, Shares, Average price, Currency. Parser handles quoted fields, duplicate tickers within file, missing columns. GBX (pence) normalised to GBP.
+- **Benchmark weights**: Derived from cost basis (shares × avgBuyPrice) on the frontend — passed as `weights` query param to `/api/portfolio/benchmark`.
+- **Mock history**: Uses geometric Brownian motion (GBM) seeded per ticker so series are deterministic. Benchmark series uses separate seed (99).
+- **Period mapping**: `1mo`=21, `3mo`=63, `6mo`=126, `1y`=252, `3y`=756, `5y`=1260 trading days.
+- **PerformanceChart**: Both series normalised to base=100, dashed reference line at 100. Portfolio = solid green, S&P 500 = dashed cyan.
 
 ## UI Conventions (established post-Phase 1)
 - **Add Holding**: single entry point — Navbar button only. No per-page duplicate buttons.
@@ -119,7 +135,7 @@ npm run dev
 
 ## Phase Completion Checklist
 - [x] Phase 1 — Scaffolding & Core Infrastructure
-- [ ] Phase 2 — CSV Upload & Benchmarking
+- [x] Phase 2 — CSV Upload & Benchmarking
 - [ ] Phase 3 — Sector & Geographic Exposure
 - [ ] Phase 4 — Risk Metrics Engine
 - [ ] Phase 5 — News Feed & Price Alerts
