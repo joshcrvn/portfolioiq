@@ -22,11 +22,13 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <div className="min-h-screen" style={{ backgroundColor: '#0F1117' }}>
+        <div className="flex min-h-screen" style={{ backgroundColor: '#0F1117' }}>
           <Sidebar />
-          <div className="ml-16 lg:ml-56 min-h-screen flex flex-col">
+          {/* Spacer that matches sidebar width — keeps content out from behind the fixed sidebar */}
+          <div className="w-16 lg:w-56 flex-shrink-0" />
+          <div className="flex-1 min-w-0 flex flex-col">
             <Navbar />
-            <main className="flex-1 pt-14 px-4 lg:px-6 py-6">
+            <main className="flex-1 px-4 lg:px-6 pb-6" style={{ paddingTop: '80px' }}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/holdings" element={<Holdings />} />
