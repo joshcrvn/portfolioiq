@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Holding, PriceAlert } from '../types';
+import type { Holding, PriceAlert } from '../types';
 
 interface PortfolioState {
   holdings: Holding[];
