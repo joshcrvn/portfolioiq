@@ -243,7 +243,7 @@ def get_benchmark(tickers: list[str], weights: list[float], period: str = '1y') 
             raise ValueError("No data returned")
 
         close = data['Close'] if 'Close' in data.columns else data
-        if isinstance(close, pd.MultiIndex, ):
+        if isinstance(close.columns, pd.MultiIndex):
             close.columns = close.columns.get_level_values(0)
 
         close = close.ffill().dropna()
