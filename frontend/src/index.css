@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #161B22;
+  --bg-card: #1A1F2E;
+  --accent-green: #00FF94;
+  --accent-cyan: #00D4FF;
+  --accent-red: #FF4D4D;
+  --text-primary: #E6EDF3;
+  --text-secondary: #8B949E;
+  --border: #30363D;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* Glow effects */
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 148, 0.15);
+}
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+.glow-red {
+  box-shadow: 0 0 20px rgba(255, 77, 77, 0.15);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Number counter animation */
+@keyframes countUp {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
