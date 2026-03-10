@@ -39,7 +39,7 @@ export function HoldingsTable({ holdings, isLoading }: HoldingsTableProps) {
               {HEADERS.map((h, i) => (
                 <th
                   key={i}
-                  className="px-3 py-3 text-left text-xs font-medium tracking-wider"
+                  className="px-4 py-3.5 text-left text-xs font-medium tracking-wider"
                   style={{
                     color: '#8B949E',
                     width: h === 'Holding' ? '220px' : h === '' ? '40px' : undefined,
@@ -56,7 +56,7 @@ export function HoldingsTable({ holdings, isLoading }: HoldingsTableProps) {
               ? Array.from({ length: 3 }).map((_, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid #1E2430' }}>
                     {HEADERS.map((_, j) => (
-                      <td key={j} className="px-3 py-3">
+                      <td key={j} className="px-4 py-3.5">
                         <div className="h-4 rounded animate-pulse"
                           style={{ backgroundColor: '#30363D', width: j === 0 ? '140px' : '60px' }} />
                       </td>
@@ -102,7 +102,7 @@ function HoldingRow({
       }}
     >
       {/* Holding: ticker badge + name */}
-      <td className="px-3 py-3">
+      <td className="px-4 py-3.5">
         <div className="flex flex-col gap-0.5">
           <span
             className="font-mono font-semibold text-sm px-2 py-0.5 rounded self-start"
@@ -120,35 +120,35 @@ function HoldingRow({
       </td>
 
       {/* Shares */}
-      <td className="px-3 py-3" style={{ whiteSpace: 'nowrap' }}>
+      <td className="px-4 py-3.5" style={{ whiteSpace: 'nowrap' }}>
         <span className="font-mono text-sm" style={{ color: '#E6EDF3' }}>
           {holding.shares.toLocaleString()}
         </span>
       </td>
 
       {/* Avg Price */}
-      <td className="px-3 py-3" style={{ whiteSpace: 'nowrap' }}>
+      <td className="px-4 py-3.5" style={{ whiteSpace: 'nowrap' }}>
         <span className="font-mono text-sm" style={{ color: '#8B949E' }}>
           {formatCurrency(holding.avgBuyPrice, holding.currency)}
         </span>
       </td>
 
       {/* Current Price */}
-      <td className="px-3 py-3" style={{ whiteSpace: 'nowrap' }}>
+      <td className="px-4 py-3.5" style={{ whiteSpace: 'nowrap' }}>
         <span className="font-mono text-sm font-medium" style={{ color: '#E6EDF3' }}>
           {holding.currentPrice > 0 ? formatCurrency(holding.currentPrice, holding.currency) : '—'}
         </span>
       </td>
 
       {/* Value */}
-      <td className="px-3 py-3" style={{ whiteSpace: 'nowrap' }}>
+      <td className="px-4 py-3.5" style={{ whiteSpace: 'nowrap' }}>
         <span className="font-mono text-sm font-semibold" style={{ color: '#E6EDF3' }}>
           {holding.currentValue > 0 ? formatCurrency(holding.currentValue, holding.currency) : '—'}
         </span>
       </td>
 
       {/* P&L */}
-      <td className="px-3 py-3" style={{ whiteSpace: 'nowrap' }}>
+      <td className="px-4 py-3.5" style={{ whiteSpace: 'nowrap' }}>
         <div className="flex items-center gap-1">
           {isUp ? (
             <TrendingUp size={11} color="#00FF94" />
@@ -167,14 +167,14 @@ function HoldingRow({
       </td>
 
       {/* Day Change */}
-      <td className="px-3 py-3" style={{ whiteSpace: 'nowrap' }}>
+      <td className="px-4 py-3.5" style={{ whiteSpace: 'nowrap' }}>
         <span className="font-mono text-sm" style={{ color: pnlColor(holding.dayChange) }}>
           {formatPercent(holding.dayChangePercent)}
         </span>
       </td>
 
       {/* Delete */}
-      <td className="px-3 py-3">
+      <td className="px-4 py-3.5">
         {confirmDelete ? (
           <button
             onClick={handleDelete}

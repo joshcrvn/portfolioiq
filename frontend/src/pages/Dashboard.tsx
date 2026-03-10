@@ -20,10 +20,10 @@ function SummaryCard({
     isPositive === undefined ? '#00D4FF' : isPositive ? '#00FF94' : '#FF4D4D';
   return (
     <div
-      className="rounded-xl p-5 transition-all duration-150 hover:glow-cyan"
+      className="rounded-xl p-6 transition-all duration-150 hover:glow-cyan"
       style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-medium tracking-wider" style={{ color: '#8B949E' }}>
           {label}
         </span>
@@ -93,7 +93,7 @@ export function Dashboard() {
 
       {/* Holdings Table */}
       <div>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>
             Holdings
           </h2>

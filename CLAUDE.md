@@ -4,8 +4,8 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 1 of 6 complete
-- Last commit: `feat(api): wire up /api/portfolio/quote with yfinance + mock fallback for dev`
+- Phase 1 of 6 complete + UI polish fixes applied
+- Last commit: `fix(ui): improve padding, remove duplicate add holding button, consistent spacing`
 - Frontend builds cleanly, backend starts and serves quotes
 
 ## Tech Stack
@@ -93,6 +93,12 @@ portfolioiq/
 - Name enrichment from yfinance is not working in dev (mock mode returns proper names from MOCK_PRICES)
 - `App.css` (Vite default) still exists — can be deleted in cleanup phase
 - `frontend/public/vite.svg` and `frontend/src/assets/react.svg` still present — clean up in Phase 6
+
+## UI Conventions (established post-Phase 1)
+- **Add Holding**: single entry point — Navbar button only. No per-page duplicate buttons.
+- **Sidebar layout**: flex-based spacer div (`w-16 lg:w-56 flex-shrink-0`) rather than margin-left, to avoid Tailwind v4 responsive class issues.
+- **Card padding**: `p-6` on summary/metric cards. Table cells: `px-4 py-3.5`.
+- **Main content top padding**: `paddingTop: '80px'` inline style (56px navbar + 24px gap).
 
 ## How to Run Locally
 
