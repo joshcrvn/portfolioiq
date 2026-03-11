@@ -109,7 +109,7 @@ export function PerformanceChart({ holdings }: PerformanceChartProps) {
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1E2430" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(30,36,48,0.6)" vertical={false} />
               <XAxis
                 dataKey="date"
                 tick={{ fill: '#8B949E', fontSize: 11, fontFamily: 'JetBrains Mono' }}
@@ -134,6 +134,9 @@ export function PerformanceChart({ holdings }: PerformanceChartProps) {
                 strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 4, fill: '#00FF94', strokeWidth: 0 }}
+                isAnimationActive
+                animationDuration={1000}
+                animationEasing="ease-out"
               />
               <Line
                 type="monotone"
@@ -144,6 +147,9 @@ export function PerformanceChart({ holdings }: PerformanceChartProps) {
                 strokeDasharray="4 4"
                 dot={false}
                 activeDot={{ r: 4, fill: '#00D4FF', strokeWidth: 0 }}
+                isAnimationActive
+                animationDuration={1000}
+                animationEasing="ease-out"
               />
             </LineChart>
           </ResponsiveContainer>

@@ -55,6 +55,9 @@ export function SectorPieChart({ data }: SectorPieChartProps) {
             innerRadius={50}
             labelLine={false}
             label={<CustomLabel />}
+            isAnimationActive
+            animationDuration={900}
+            animationEasing="ease-out"
           >
             {data.map((_, i) => (
               <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="transparent" />

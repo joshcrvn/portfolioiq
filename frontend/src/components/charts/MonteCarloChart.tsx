@@ -42,13 +42,13 @@ export function MonteCarloChart({ data, nDays }: MonteCarloChartProps) {
   const yMin = Math.floor(Math.min(...allValues) * 0.98);
   const yMax = Math.ceil(Math.max(...allValues) * 1.02);
 
-  const lineProps = { dot: false as const, activeDot: false as const, isAnimationActive: false };
+  const lineProps = { dot: false as const, activeDot: { r: 3, strokeWidth: 0 } as const, isAnimationActive: true as const, animationDuration: 1000, animationEasing: 'ease-out' as const };
 
   return (
     <div>
       <ResponsiveContainer width="100%" height={260}>
         <ComposedChart data={chartData} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1E2430" />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(30,36,48,0.6)" />
           <XAxis
             dataKey="day"
             tick={{ fill: '#8B949E', fontSize: 11, fontFamily: 'JetBrains Mono' }}

@@ -46,7 +46,7 @@ export function GeographicChart({ data }: GeographicChartProps) {
         layout="vertical"
         margin={{ top: 4, right: 48, bottom: 4, left: 8 }}
       >
-        <CartesianGrid strokeDasharray="3 3" stroke="#1E2430" horizontal={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(30,36,48,0.6)" horizontal={false} />
         <XAxis
           type="number"
           domain={[0, 1]}
@@ -64,7 +64,7 @@ export function GeographicChart({ data }: GeographicChartProps) {
           axisLine={false}
         />
         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-        <Bar dataKey="weight" radius={[0, 4, 4, 0]} maxBarSize={28}>
+        <Bar dataKey="weight" radius={[0, 4, 4, 0]} maxBarSize={28} isAnimationActive animationDuration={900} animationEasing="ease-out">
           {chartData.map((entry, i) => (
             <Cell key={entry.name} fill={getColor(entry.name, i)} />
           ))}
