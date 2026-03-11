@@ -4,9 +4,9 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 4 of 6 complete
-- Last commit: `feat(risk): add Risk Metrics Engine — Sharpe, VaR, Monte Carlo, Beta, Correlation`
-- Frontend builds cleanly, backend serves quotes + history + benchmark + sector/geo exposure + risk metrics
+- Phase 5 of 6 complete
+- Last commit: `feat(phase5): add News Feed and Price Alerts`
+- Frontend builds cleanly, backend serves all endpoints including news feed and alert checking
 
 ## Tech Stack
 
@@ -34,7 +34,8 @@ portfolioiq/
 │   │   │   ├── usePortfolio.ts             # TanStack Query: live quotes → LiveHolding[]
 │   │   │   ├── useBenchmark.ts             # TanStack Query: portfolio vs S&P 500
 │   │   │   ├── useExposure.ts              # TanStack Query: sector + geo exposure
-│   │   │   └── useRiskMetrics.ts           # TanStack Query: risk metrics from /api/metrics/risk
+│   │   │   ├── useRiskMetrics.ts           # TanStack Query: risk metrics from /api/metrics/risk
+│   │   │   └── useNews.ts                  # TanStack Query: news feed, 10-min refetch
 │   │   ├── utils/
 │   │   │   ├── formatters.ts               # formatCurrency, formatPercent, pnlColor
 │   │   │   └── csvParser.ts                # Trading 212 CSV → Holding[] parser
@@ -56,8 +57,8 @@ portfolioiq/
 │   │   │   ├── Holdings.tsx
 │   │   │   ├── Analytics.tsx               # Sector/geo charts + diversification score
 │   │   │   ├── RiskMetrics.tsx             # Sharpe, VaR, Beta, MC chart, Correlation heatmap
-│   │   │   ├── News.tsx                    # Placeholder (Phase 5)
-│   │   │   └── Alerts.tsx                  # Placeholder (Phase 5)
+│   │   │   ├── News.tsx                    # Article cards, ticker filter tabs, sentiment badges
+│   │   │   └── Alerts.tsx                  # Add alert form, alert list, triggered detection
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   └── package.json
@@ -68,12 +69,13 @@ portfolioiq/
 │   │   ├── routers/
 │   │   │   ├── portfolio.py          # GET /quote, /history, /benchmark, /sector-exposure, /geo-exposure
 │   │   │   ├── metrics.py            # GET /api/metrics/risk
-│   │   │   ├── news.py               # Placeholder (Phase 5)
+│   │   │   ├── news.py               # GET /api/news/feed
 │   │   │   └── alerts.py             # POST /api/alerts/check
 │   │   ├── services/
 │   │   │   ├── market_data.py        # get_quotes(), get_history(), get_benchmark(), mock fallback
 │   │   │   ├── exposure_service.py   # get_sector_exposure(), get_geo_exposure(), diversification_score()
-│   │   │   └── risk_service.py       # compute_risk_metrics(): Sharpe, VaR, drawdown, beta, MC paths
+│   │   │   ├── risk_service.py       # compute_risk_metrics(): Sharpe, VaR, drawdown, beta, MC paths
+│   │   │   └── news_service.py       # get_news(): NewsAPI + mock fallback, keyword sentiment scoring
 │   │   └── models/schemas.py
 │   ├── requirements.txt
 │   ├── .env.example
@@ -110,6 +112,14 @@ portfolioiq/
 - `App.css` (Vite default) still exists — can be deleted in cleanup phase
 - `frontend/public/vite.svg` and `frontend/src/assets/react.svg` still present — clean up in Phase 6
 - Recharts bundle adds ~370 KB to JS — acceptable for this project, can code-split in Phase 6 if needed
+
+## Key Architectural Decisions (Phase 5 additions)
+- **News**: `GET /api/news/feed?tickers=...`. Uses NewsAPI if `NEWSAPI_KEY` env var is set (and not the placeholder value). Otherwise returns curated mock articles covering broad market, S&P 500, NASDAQ, FTSE All-World, value ETFs etc. GLOBAL-tagged articles appear for all tickers.
+- **Sentiment scoring**: Keyword-based positive/negative word sets applied to `title + description`. No ML dependency.
+- **News mock articles**: 16 pre-authored articles with varied sentiment, realistic sources (FT, Reuters, Bloomberg, Morningstar), and ticker-keyed relevance. Timestamps computed relative to `datetime.now()` so they always appear recent.
+- **News ticker filter**: Client-side filter tabs (All + each holding ticker). GLOBAL articles always appear in every filter.
+- **Alerts**: Entirely client-side. State lives in Zustand store (`alerts: PriceAlert[]`). Triggered detection: compare `alert.targetPrice` vs `currentPrice` from `usePortfolio` — no backend call needed per check. Sorted: triggered first → active → inactive.
+- **Alert UI**: Two-panel layout (Add form left, list right on xl). Confirm-before-delete pattern matching HoldingsTable. Active/inactive toggled via Bell/BellOff icon. Triggered alerts get red border + `AlertTriangle` icon.
 
 ## Key Architectural Decisions (Phase 4 additions)
 - **Risk endpoint**: `GET /api/metrics/risk?tickers=...&weights=...&period=...` — all metrics in one call.
@@ -161,5 +171,5 @@ npm run dev
 - [x] Phase 2 — CSV Upload & Benchmarking
 - [x] Phase 3 — Sector & Geographic Exposure
 - [x] Phase 4 — Risk Metrics Engine
-- [ ] Phase 5 — News Feed & Price Alerts
+- [x] Phase 5 — News Feed & Price Alerts
 - [ ] Phase 6 — Polish & Deployment
