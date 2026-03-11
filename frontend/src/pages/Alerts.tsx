@@ -273,7 +273,7 @@ export function Alerts() {
   });
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-xl font-bold" style={{ color: '#E6EDF3' }}>Price Alerts</h1>

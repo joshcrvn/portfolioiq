@@ -3,7 +3,7 @@ import { BarChart2 } from 'lucide-react';
 
 export function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-5 fade-in">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-5">
       <BarChart2 size={40} color="#30363D" />
       <div className="text-center">
         <p className="font-mono text-5xl font-bold mb-2" style={{ color: '#30363D' }}>404</p>
