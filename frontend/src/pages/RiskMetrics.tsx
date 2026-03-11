@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Activity, TrendingDown, BarChart2, Zap, ShieldAlert, GitBranch } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { usePortfolioStore } from '../store/portfolioStore';
 import { useRiskMetrics } from '../hooks/useRiskMetrics';
+import { useAnimatedCounter } from '../hooks/useAnimatedCounter';
 import { CorrelationHeatmap } from '../components/charts/CorrelationHeatmap';
 import { MonteCarloChart } from '../components/charts/MonteCarloChart';
 
@@ -19,28 +21,41 @@ const PERIOD_LABELS: Record<Period, string> = {
 function MetricCard({
   icon: Icon,
   label,
-  value,
+  rawValue,
   sub,
   color,
   iconColor,
+  index,
+  formatter,
 }: {
   icon: React.ElementType;
   label: string;
-  value: string;
+  rawValue: number;
   sub?: string;
   color: string;
   iconColor: string;
+  index: number;
+  formatter: (n: number) => string;
 }) {
+  const animated = useAnimatedCounter(rawValue);
+  const glowColor = color + '30';
+
   return (
-    <div className="rounded-xl p-5"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.07, ease: 'easeOut' }}
+      whileHover={{ boxShadow: `0 0 0 1px ${glowColor}, 0 4px 20px ${glowColor}` }}
+      className="rounded-xl p-5 transition-shadow duration-300 cursor-default"
+      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
+    >
       <div className="flex items-center gap-2 mb-3">
         <Icon size={14} color={iconColor} />
         <p className="text-xs font-medium" style={{ color: '#8B949E' }}>{label}</p>
       </div>
-      <p className="font-mono text-2xl font-bold" style={{ color }}>{value}</p>
+      <p className="font-mono text-2xl font-bold" style={{ color }}>{formatter(animated)}</p>
       {sub && <p className="text-xs mt-1" style={{ color: '#8B949E' }}>{sub}</p>}
-    </div>
+    </motion.div>
   );
 }
 
@@ -169,50 +184,62 @@ export function RiskMetrics() {
                 <MetricCard
                   icon={Activity}
                   label="Sharpe Ratio"
-                  value={fmt(data.sharpe)}
+                  rawValue={data.sharpe}
                   sub="Return per unit of risk"
                   color={sharpeColor(data.sharpe)}
                   iconColor={sharpeColor(data.sharpe)}
+                  index={0}
+                  formatter={(n) => fmt(n)}
                 />
                 <MetricCard
                   icon={BarChart2}
                   label="Ann. Volatility"
-                  value={pct(data.volatility)}
+                  rawValue={data.volatility}
                   sub="Annualised standard deviation"
                   color={volColor(data.volatility)}
                   iconColor={volColor(data.volatility)}
+                  index={1}
+                  formatter={(n) => pct(n)}
                 />
                 <MetricCard
                   icon={TrendingDown}
                   label="Max Drawdown"
-                  value={pct(data.maxDrawdown)}
+                  rawValue={data.maxDrawdown}
                   sub="Worst peak-to-trough loss"
                   color={drawdownColor()}
                   iconColor="#FF4D4D"
+                  index={2}
+                  formatter={(n) => pct(n)}
                 />
                 <MetricCard
                   icon={Zap}
                   label="Beta (vs S&P 500)"
-                  value={fmt(data.beta)}
+                  rawValue={data.beta}
                   sub="Market sensitivity"
                   color={betaColor(data.beta)}
                   iconColor={betaColor(data.beta)}
+                  index={3}
+                  formatter={(n) => fmt(n)}
                 />
                 <MetricCard
                   icon={ShieldAlert}
                   label="Hist. VaR 95%"
-                  value={pct(data.var95)}
+                  rawValue={data.var95}
                   sub="1-day loss (historical)"
                   color={varColor()}
                   iconColor="#FF4D4D"
+                  index={4}
+                  formatter={(n) => pct(n)}
                 />
                 <MetricCard
                   icon={ShieldAlert}
                   label="MC VaR 95%"
-                  value={pct(data.mcVar95)}
+                  rawValue={data.mcVar95}
                   sub="1-day loss (Monte Carlo)"
                   color={varColor()}
                   iconColor="#FF4D4D"
+                  index={5}
+                  formatter={(n) => pct(n)}
                 />
               </>
             ) : null}
