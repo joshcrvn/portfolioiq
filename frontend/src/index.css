@@ -75,6 +75,38 @@ body {
   100% { background-position: 64px 64px; }
 }
 
+/* Sidebar active nav item — gradient glow pulse */
+@keyframes navGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(0, 255, 148, 0.35),
+                inset 2px 0 0 0 #00FF94,
+                0 0 12px rgba(0, 255, 148, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.35),
+                inset 2px 0 0 0 #00D4FF,
+                0 0 16px rgba(0, 212, 255, 0.12);
+  }
+}
+.nav-active-glow {
+  animation: navGlowPulse 3s ease-in-out infinite;
+}
+
+/* Respect prefers-reduced-motion for all animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Navbar live indicator pulse */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(0,255,148,0.8); }
+  50%       { opacity: 0.4; box-shadow: 0 0 2px rgba(0,255,148,0.3); }
+}
+
 /* tsParticles canvas — fixed full-screen behind all app content */
 #tsparticles {
   position: fixed !important;

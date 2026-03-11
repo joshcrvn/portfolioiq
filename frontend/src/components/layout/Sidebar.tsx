@@ -43,11 +43,11 @@ export function Sidebar() {
             end
             className={({ isActive }) =>
               `flex items-center gap-3 px-2 py-2.5 rounded-lg transition-all duration-150 group ${
-                isActive ? 'nav-active' : 'nav-inactive'
+                isActive ? 'nav-active-glow' : ''
               }`
             }
             style={({ isActive }) => ({
-              backgroundColor: isActive ? 'rgba(0, 255, 148, 0.1)' : 'transparent',
+              backgroundColor: isActive ? 'rgba(0, 255, 148, 0.08)' : 'transparent',
               color: isActive ? '#00FF94' : '#8B949E',
             })}
           >
