@@ -4,9 +4,9 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 2 of 6 complete
-- Last commit: `fix(api): fix MultiIndex check in benchmark endpoint`
-- Frontend builds cleanly, backend serves quotes + history + benchmark
+- Phase 3 of 6 complete
+- Last commit: `feat(analytics): add SectorPieChart, GeographicChart, and Analytics page with diversification score`
+- Frontend builds cleanly, backend serves quotes + history + benchmark + sector/geo exposure
 
 ## Tech Stack
 
@@ -32,7 +32,8 @@ portfolioiq/
 │   │   ├── types/index.ts                  # All TypeScript types
 │   │   ├── hooks/
 │   │   │   ├── usePortfolio.ts             # TanStack Query: live quotes → LiveHolding[]
-│   │   │   └── useBenchmark.ts             # TanStack Query: portfolio vs S&P 500
+│   │   │   ├── useBenchmark.ts             # TanStack Query: portfolio vs S&P 500
+│   │   │   └── useExposure.ts              # TanStack Query: sector + geo exposure
 │   │   ├── utils/
 │   │   │   ├── formatters.ts               # formatCurrency, formatPercent, pnlColor
 │   │   │   └── csvParser.ts                # Trading 212 CSV → Holding[] parser
@@ -44,11 +45,13 @@ portfolioiq/
 │   │   │   │   ├── CSVUploadModal.tsx      # Drag/drop CSV import, 3-step flow
 │   │   │   │   └── HoldingsTable.tsx
 │   │   │   └── charts/
-│   │   │       └── PerformanceChart.tsx    # Recharts LineChart, period selector, S&P 500 benchmark
+│   │   │       ├── PerformanceChart.tsx    # Recharts LineChart, period selector, S&P 500 benchmark
+│   │   │       ├── SectorPieChart.tsx      # Recharts PieChart (donut), sector weights
+│   │   │       └── GeographicChart.tsx     # Recharts BarChart (horizontal), regional weights
 │   │   ├── pages/
 │   │   │   ├── Dashboard.tsx               # Summary cards + PerformanceChart + HoldingsTable
 │   │   │   ├── Holdings.tsx
-│   │   │   ├── Analytics.tsx               # Placeholder (Phase 3)
+│   │   │   ├── Analytics.tsx               # Sector/geo charts + diversification score
 │   │   │   ├── RiskMetrics.tsx             # Placeholder (Phase 4)
 │   │   │   ├── News.tsx                    # Placeholder (Phase 5)
 │   │   │   └── Alerts.tsx                  # Placeholder (Phase 5)
@@ -60,12 +63,13 @@ portfolioiq/
 │   ├── app/
 │   │   ├── main.py
 │   │   ├── routers/
-│   │   │   ├── portfolio.py          # GET /quote, /history, /benchmark
+│   │   │   ├── portfolio.py          # GET /quote, /history, /benchmark, /sector-exposure, /geo-exposure
 │   │   │   ├── metrics.py            # Placeholder (Phase 4)
 │   │   │   ├── news.py               # Placeholder (Phase 5)
 │   │   │   └── alerts.py             # POST /api/alerts/check
 │   │   ├── services/
-│   │   │   └── market_data.py        # get_quotes(), get_history(), get_benchmark(), mock fallback
+│   │   │   ├── market_data.py        # get_quotes(), get_history(), get_benchmark(), mock fallback
+│   │   │   └── exposure_service.py   # get_sector_exposure(), get_geo_exposure(), diversification_score()
 │   │   └── models/schemas.py
 │   ├── requirements.txt
 │   ├── .env.example
@@ -103,6 +107,12 @@ portfolioiq/
 - `frontend/public/vite.svg` and `frontend/src/assets/react.svg` still present — clean up in Phase 6
 - Recharts bundle adds ~370 KB to JS — acceptable for this project, can code-split in Phase 6 if needed
 
+## Key Architectural Decisions (Phase 3 additions)
+- **Sector/geo compositions**: Hardcoded in `exposure_service.py` — covers VWRL, VWRP, VUSA, CSPX, SPY, IVV, QQQ, EQQQ, VTI, VXUS, IWDG. Unknown tickers fall back to `{Diversified: 1.0}` / `{Global: 1.0}`.
+- **Diversification score**: HHI-based. Score = 40% holding concentration + 60% sector concentration, scaled 0–100. Grades: Excellent ≥75, Good ≥55, Fair ≥35, Concentrated <35.
+- **ExposureItem type**: API returns `{name, weight}` shape. Local `ExposureItem` interface in `useExposure.ts` used throughout charts (not the generic `SectorExposure`/`GeographicExposure` types from `types/index.ts`).
+- **Sector colours**: Fixed palette cycling `COLORS[]` in `SectorPieChart`. Geographic colours keyed by region name in `REGION_COLORS` record.
+
 ## Key Architectural Decisions (Phase 2 additions)
 - **CSV import**: Trading 212 format — Ticker, Name, Shares, Average price, Currency. Parser handles quoted fields, duplicate tickers within file, missing columns. GBX (pence) normalised to GBP.
 - **Benchmark weights**: Derived from cost basis (shares × avgBuyPrice) on the frontend — passed as `weights` query param to `/api/portfolio/benchmark`.
@@ -136,7 +146,7 @@ npm run dev
 ## Phase Completion Checklist
 - [x] Phase 1 — Scaffolding & Core Infrastructure
 - [x] Phase 2 — CSV Upload & Benchmarking
-- [ ] Phase 3 — Sector & Geographic Exposure
+- [x] Phase 3 — Sector & Geographic Exposure
 - [ ] Phase 4 — Risk Metrics Engine
 - [ ] Phase 5 — News Feed & Price Alerts
 - [ ] Phase 6 — Polish & Deployment
