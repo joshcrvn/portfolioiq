@@ -69,6 +69,12 @@ body {
   to { opacity: 1; }
 }
 
+/* Landing page animated grid lines */
+@keyframes gridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 64px 64px; }
+}
+
 /* tsParticles canvas — fixed full-screen behind all app content */
 #tsparticles {
   position: fixed !important;

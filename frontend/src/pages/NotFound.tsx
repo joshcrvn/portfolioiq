@@ -10,7 +10,7 @@ export function NotFound() {
         <p className="text-sm" style={{ color: '#8B949E' }}>Page not found</p>
       </div>
       <Link
-        to="/"
+        to="/app/dashboard"
         className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80"
         style={{ backgroundColor: '#161B22', border: '1px solid #30363D', color: '#E6EDF3' }}
       >

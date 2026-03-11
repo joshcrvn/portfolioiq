@@ -10,12 +10,12 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/holdings', icon: Briefcase, label: 'Holdings' },
-  { to: '/analytics', icon: BarChart2, label: 'Analytics' },
-  { to: '/risk', icon: Shield, label: 'Risk Metrics' },
-  { to: '/news', icon: Newspaper, label: 'News' },
-  { to: '/alerts', icon: Bell, label: 'Alerts' },
+  { to: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/app/holdings',  icon: Briefcase,       label: 'Holdings' },
+  { to: '/app/analytics', icon: BarChart2,        label: 'Analytics' },
+  { to: '/app/risk',      icon: Shield,           label: 'Risk Metrics' },
+  { to: '/app/news',      icon: Newspaper,        label: 'News' },
+  { to: '/app/alerts',    icon: Bell,             label: 'Alerts' },
 ];
 
 export function Sidebar() {
@@ -40,7 +40,7 @@ export function Sidebar() {
           <NavLink
             key={to}
             to={to}
-            end={to === '/'}
+            end
             className={({ isActive }) =>
               `flex items-center gap-3 px-2 py-2.5 rounded-lg transition-all duration-150 group ${
                 isActive ? 'nav-active' : 'nav-inactive'
