@@ -4,9 +4,9 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 3 of 6 complete
-- Last commit: `fix(analytics): handle ticker suffix mismatch in exposure service lookup`
-- Frontend builds cleanly, backend serves quotes + history + benchmark + sector/geo exposure
+- Phase 4 of 6 complete
+- Last commit: `feat(risk): add Risk Metrics Engine — Sharpe, VaR, Monte Carlo, Beta, Correlation`
+- Frontend builds cleanly, backend serves quotes + history + benchmark + sector/geo exposure + risk metrics
 
 ## Tech Stack
 
@@ -33,7 +33,8 @@ portfolioiq/
 │   │   ├── hooks/
 │   │   │   ├── usePortfolio.ts             # TanStack Query: live quotes → LiveHolding[]
 │   │   │   ├── useBenchmark.ts             # TanStack Query: portfolio vs S&P 500
-│   │   │   └── useExposure.ts              # TanStack Query: sector + geo exposure
+│   │   │   ├── useExposure.ts              # TanStack Query: sector + geo exposure
+│   │   │   └── useRiskMetrics.ts           # TanStack Query: risk metrics from /api/metrics/risk
 │   │   ├── utils/
 │   │   │   ├── formatters.ts               # formatCurrency, formatPercent, pnlColor
 │   │   │   └── csvParser.ts                # Trading 212 CSV → Holding[] parser
@@ -47,12 +48,14 @@ portfolioiq/
 │   │   │   └── charts/
 │   │   │       ├── PerformanceChart.tsx    # Recharts LineChart, period selector, S&P 500 benchmark
 │   │   │       ├── SectorPieChart.tsx      # Recharts PieChart (donut), sector weights
-│   │   │       └── GeographicChart.tsx     # Recharts BarChart (horizontal), regional weights
+│   │   │       ├── GeographicChart.tsx     # Recharts BarChart (horizontal), regional weights
+│   │   │       ├── CorrelationHeatmap.tsx  # SVG heatmap, red–neutral–green colour scale
+│   │   │       └── MonteCarloChart.tsx     # Recharts ComposedChart, 5-percentile fan chart
 │   │   ├── pages/
 │   │   │   ├── Dashboard.tsx               # Summary cards + PerformanceChart + HoldingsTable
 │   │   │   ├── Holdings.tsx
 │   │   │   ├── Analytics.tsx               # Sector/geo charts + diversification score
-│   │   │   ├── RiskMetrics.tsx             # Placeholder (Phase 4)
+│   │   │   ├── RiskMetrics.tsx             # Sharpe, VaR, Beta, MC chart, Correlation heatmap
 │   │   │   ├── News.tsx                    # Placeholder (Phase 5)
 │   │   │   └── Alerts.tsx                  # Placeholder (Phase 5)
 │   │   ├── App.tsx
@@ -64,12 +67,13 @@ portfolioiq/
 │   │   ├── main.py
 │   │   ├── routers/
 │   │   │   ├── portfolio.py          # GET /quote, /history, /benchmark, /sector-exposure, /geo-exposure
-│   │   │   ├── metrics.py            # Placeholder (Phase 4)
+│   │   │   ├── metrics.py            # GET /api/metrics/risk
 │   │   │   ├── news.py               # Placeholder (Phase 5)
 │   │   │   └── alerts.py             # POST /api/alerts/check
 │   │   ├── services/
 │   │   │   ├── market_data.py        # get_quotes(), get_history(), get_benchmark(), mock fallback
-│   │   │   └── exposure_service.py   # get_sector_exposure(), get_geo_exposure(), diversification_score()
+│   │   │   ├── exposure_service.py   # get_sector_exposure(), get_geo_exposure(), diversification_score()
+│   │   │   └── risk_service.py       # compute_risk_metrics(): Sharpe, VaR, drawdown, beta, MC paths
 │   │   └── models/schemas.py
 │   ├── requirements.txt
 │   ├── .env.example
@@ -106,6 +110,14 @@ portfolioiq/
 - `App.css` (Vite default) still exists — can be deleted in cleanup phase
 - `frontend/public/vite.svg` and `frontend/src/assets/react.svg` still present — clean up in Phase 6
 - Recharts bundle adds ~370 KB to JS — acceptable for this project, can code-split in Phase 6 if needed
+
+## Key Architectural Decisions (Phase 4 additions)
+- **Risk endpoint**: `GET /api/metrics/risk?tickers=...&weights=...&period=...` — all metrics in one call.
+- **Risk metrics**: Sharpe (annualised, excess over RISK_FREE_RATE env var), Ann. Volatility, Max Drawdown, Beta vs S&P 500, Historical VaR 95%/99%, Monte Carlo VaR 95% (10k sims, fitted normal).
+- **Monte Carlo fan chart**: 500 paths over 63 trading days (≈3 months). Returns p5/p25/p50/p75/p95 bands. Rendered as 5 `Line` components in a Recharts `ComposedChart` (solid median, progressively faded outer bands).
+- **Correlation heatmap**: Pure SVG grid. Colour interpolation: −1=`#FF4D4D` (red) → 0=neutral → +1=`#00FF94` (green). Hidden when only 1 holding.
+- **Risk period selector**: 1M/3M/6M/1Y/3Y. Changing period refetches metrics. staleTime: 5 min.
+- **Beta calculation**: Portfolio log-returns covariance with S&P 500 divided by S&P 500 variance. In mock mode, uses GBM benchmark series.
 
 ## Key Architectural Decisions (Phase 3 additions)
 - **Sector/geo compositions**: Hardcoded in `exposure_service.py` — covers VWRL, VWRP, VUSA, CSPX, SPY, IVV, QQQ, EQQQ, VTI, VXUS, IWDG. Unknown tickers fall back to `{Diversified: 1.0}` / `{Global: 1.0}`.
@@ -148,6 +160,6 @@ npm run dev
 - [x] Phase 1 — Scaffolding & Core Infrastructure
 - [x] Phase 2 — CSV Upload & Benchmarking
 - [x] Phase 3 — Sector & Geographic Exposure
-- [ ] Phase 4 — Risk Metrics Engine
+- [x] Phase 4 — Risk Metrics Engine
 - [ ] Phase 5 — News Feed & Price Alerts
 - [ ] Phase 6 — Polish & Deployment
