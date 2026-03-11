@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
+import { ParticleBackground } from './components/layout/ParticleBackground';
 import { Dashboard } from './pages/Dashboard';
 import { Holdings } from './pages/Holdings';
 import { Analytics } from './pages/Analytics';
@@ -23,7 +24,9 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <div className="flex min-h-screen" style={{ backgroundColor: '#0F1117' }}>
+        <ParticleBackground />
+        {/* z-index: 1 lifts the app layout above the particle canvas (z-index: 0) */}
+        <div className="flex min-h-screen" style={{ position: 'relative', zIndex: 1 }}>
           <Sidebar />
           {/* Spacer that matches sidebar width — keeps content out from behind the fixed sidebar */}
           <div className="w-16 lg:w-56 flex-shrink-0" />

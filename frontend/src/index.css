@@ -68,3 +68,14 @@ body {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* tsParticles canvas — fixed full-screen behind all app content */
+#tsparticles {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
