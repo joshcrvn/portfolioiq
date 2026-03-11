@@ -4,9 +4,9 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 5 of 6 complete
-- Last commit: `feat(phase5): add News Feed and Price Alerts`
-- Frontend builds cleanly, backend serves all endpoints including news feed and alert checking
+- Phase 6 of 6 complete — ALL PHASES DONE
+- Last commit: `feat(phase6): polish, code splitting, deployment config, README`
+- Frontend builds cleanly with manual chunk splitting (Recharts isolated at 391 KB gzip 114 KB)
 
 ## Tech Stack
 
@@ -58,7 +58,8 @@ portfolioiq/
 │   │   │   ├── Analytics.tsx               # Sector/geo charts + diversification score
 │   │   │   ├── RiskMetrics.tsx             # Sharpe, VaR, Beta, MC chart, Correlation heatmap
 │   │   │   ├── News.tsx                    # Article cards, ticker filter tabs, sentiment badges
-│   │   │   └── Alerts.tsx                  # Add alert form, alert list, triggered detection
+│   │   │   ├── Alerts.tsx                  # Add alert form, alert list, triggered detection
+│   │   │   └── NotFound.tsx                # 404 catch-all page
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   └── package.json
@@ -109,9 +110,15 @@ portfolioiq/
 ## Known Issues / TODOs
 - yfinance `.info` endpoint is very rate-limited — `get_quotes` uses `.history()` instead (more reliable)
 - Name enrichment from yfinance is not working in dev (mock mode returns proper names from MOCK_PRICES)
-- `App.css` (Vite default) still exists — can be deleted in cleanup phase
-- `frontend/public/vite.svg` and `frontend/src/assets/react.svg` still present — clean up in Phase 6
-- Recharts bundle adds ~370 KB to JS — acceptable for this project, can code-split in Phase 6 if needed
+- All Vite default artifacts removed (App.css, vite.svg, react.svg)
+- Recharts code-split into `vendor-recharts` chunk (391 KB / 114 KB gzip)
+
+## Key Architectural Decisions (Phase 6 additions)
+- **Code splitting**: Vite `manualChunks` splits vendors into `vendor-react`, `vendor-query`, `vendor-recharts`, `vendor-zustand`. Main app chunk: 290 KB / 91 KB gzip. Recharts isolated: 391 KB / 114 KB gzip.
+- **Favicon**: Custom SVG bar-chart icon (`frontend/public/favicon.svg`) with `#0F1117` background and green/cyan bars matching the colour palette.
+- **Deployment**: `frontend/vercel.json` rewrites all paths to `/index.html` for SPA routing. `backend/Procfile` and `backend/railway.toml` for Railway/Render/Heroku.
+- **`.env.example`**: Updated to include `MOCK_DATA=true` as the default for new developers.
+- **NotFound page**: 404 catch-all route added to the React Router config.
 
 ## Key Architectural Decisions (Phase 5 additions)
 - **News**: `GET /api/news/feed?tickers=...`. Uses NewsAPI if `NEWSAPI_KEY` env var is set (and not the placeholder value). Otherwise returns curated mock articles covering broad market, S&P 500, NASDAQ, FTSE All-World, value ETFs etc. GLOBAL-tagged articles appear for all tickers.
@@ -172,4 +179,4 @@ npm run dev
 - [x] Phase 3 — Sector & Geographic Exposure
 - [x] Phase 4 — Risk Metrics Engine
 - [x] Phase 5 — News Feed & Price Alerts
-- [ ] Phase 6 — Polish & Deployment
+- [x] Phase 6 — Polish & Deployment

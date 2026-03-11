@@ -8,6 +8,7 @@ import { Analytics } from './pages/Analytics';
 import { RiskMetrics } from './pages/RiskMetrics';
 import { News } from './pages/News';
 import { Alerts } from './pages/Alerts';
+import { NotFound } from './pages/NotFound';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +37,7 @@ export default function App() {
                 <Route path="/risk" element={<RiskMetrics />} />
                 <Route path="/news" element={<News />} />
                 <Route path="/alerts" element={<Alerts />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
           </div>
