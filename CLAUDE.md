@@ -173,6 +173,41 @@ npm run dev
 # Runs on http://localhost:5173
 ```
 
+## UI Overhaul (post-Phase 6)
+
+### New Dependencies
+- `framer-motion` — page transitions, animated metric cards, number count-up
+- `@tsparticles/react` + `@tsparticles/slim` — particle canvas background
+  - Import: `loadSlim` from `@tsparticles/slim` (NOT `loadSlimPreset` — that export doesn't exist)
+
+### Route Structure
+- Landing page at `/` (`pages/Landing.tsx`) — full-screen hero, "Get Started" → `/app/dashboard`, "View Demo" loads preset holdings
+- All app pages moved to `/app/*` prefix via `AppLayout` parent route with `Outlet`
+- `AppLayout` renders `<Sidebar>`, spacer div, `<Navbar>`, and `<main>` with `AnimatePresence`
+
+### Animation Architecture
+- `ParticleBackground` (`components/layout/ParticleBackground.tsx`): module-level `engineReady` guard prevents double-init in React 18 StrictMode
+- `PageTransition` (`components/layout/PageTransition.tsx`): wraps each page, respects `useReducedMotion()`
+- `useAnimatedCounter` (`hooks/useAnimatedCounter.ts`): uses framer-motion `animate()` for number count-up, skips animation if `useReducedMotion()` returns true
+- `AnimatePresence mode="wait"` around `Outlet`, keyed by `location.pathname`
+- TypeScript: framer-motion `ease` cubic-bezier arrays must be cast as `[number, number, number, number]`; use `import type { Variants }`
+
+### CSS Animations (index.css)
+- `gridDrift` — landing page moving grid lines (64px, 24s linear)
+- `navGlowPulse` — sidebar active item pulses between green (#00FF94) and cyan (#00D4FF) glow, 3s ease-in-out
+- `livePulse` — navbar live dot fades opacity + box-shadow, 2s ease-in-out
+- `.nav-active-glow` — applies `navGlowPulse` to active sidebar NavLinks
+- `@media (prefers-reduced-motion: reduce)` — overrides all animation-duration to 0.01ms
+
+### Z-index Layering
+- Particle canvas: `position: fixed`, `z-index: 0` (via `#tsparticles` in CSS)
+- App layout wrapper: `position: relative`, `zIndex: 1`
+- Sidebar: `z-40` (fixed, above content)
+- Navbar: `z-30` (fixed, above content)
+
+### Recharts Animations
+All charts have first-render animation via `isAnimationActive`, `animationDuration`, `animationEasing="ease-out"`. MonteCarloChart uses `isAnimationActive: true as const` (was false).
+
 ## Phase Completion Checklist
 - [x] Phase 1 — Scaffolding & Core Infrastructure
 - [x] Phase 2 — CSV Upload & Benchmarking
@@ -180,3 +215,4 @@ npm run dev
 - [x] Phase 4 — Risk Metrics Engine
 - [x] Phase 5 — News Feed & Price Alerts
 - [x] Phase 6 — Polish & Deployment
+- [x] UI Overhaul — Particles, Framer Motion, Landing Page, Chart Animations, Final Polish
