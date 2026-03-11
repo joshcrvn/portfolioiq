@@ -100,10 +100,10 @@ body::before {
 /* Sidebar active nav item — gradient glow pulse */
 @keyframes navGlowPulse {
   0%, 100% {
-    box-shadow: inset 2px 0 0 0 #00FF94, 0 0 12px rgba(0, 255, 148, 0.08);
+    box-shadow: 0 0 12px rgba(0, 255, 148, 0.08);
   }
   50% {
-    box-shadow: inset 2px 0 0 0 #00D4FF, 0 0 16px rgba(0, 212, 255, 0.12);
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.12);
   }
 }
 .nav-active-glow {
