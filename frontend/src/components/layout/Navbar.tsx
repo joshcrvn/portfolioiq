@@ -12,7 +12,6 @@ function LiveIndicator() {
   const [time, setTime] = useState(() => formatTime(new Date()));
 
   useEffect(() => {
-    // Update every minute
     const tick = () => setTime(formatTime(new Date()));
     tick();
     const id = setInterval(tick, 60_000);
@@ -20,17 +19,20 @@ function LiveIndicator() {
   }, []);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2.5">
       <span
-        className="w-1.5 h-1.5 rounded-full"
+        className="w-2 h-2 rounded-full"
         style={{
           backgroundColor: '#00FF94',
-          boxShadow: '0 0 6px rgba(0,255,148,0.8)',
-          animation: 'livePulse 2s ease-in-out infinite',
+          animation: 'liveDotPulse 2s ease-in-out infinite',
         }}
       />
-      <span className="text-xs font-mono font-semibold" style={{ color: '#00FF94' }}>LIVE</span>
-      <span className="text-xs font-mono" style={{ color: '#8B949E' }}>· {time}</span>
+      <span className="text-xs font-mono font-bold tracking-widest" style={{ color: '#00FF94' }}>
+        LIVE
+      </span>
+      <span className="text-xs font-mono" style={{ color: 'rgba(255,255,255,0.3)' }}>
+        · {time}
+      </span>
     </div>
   );
 }
@@ -47,7 +49,11 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
     <>
       <header
         className="fixed top-0 right-0 left-16 lg:left-56 h-14 flex items-center justify-between px-4 lg:px-6 z-30"
-        style={{ backgroundColor: '#0F1117', borderBottom: '1px solid #30363D' }}
+        style={{
+          background: 'rgba(8, 12, 20, 0.9)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}
       >
         <LiveIndicator />
 
@@ -57,7 +63,11 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
               onClick={onRefresh}
               disabled={isRefreshing}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150 disabled:opacity-50"
-              style={{ backgroundColor: '#161B22', color: '#8B949E', border: '1px solid #30363D' }}
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                color: 'rgba(255,255,255,0.5)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
             >
               <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
               <span className="hidden sm:inline">Refresh</span>
@@ -67,7 +77,19 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
           <button
             onClick={() => setShowCSVModal(true)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150"
-            style={{ backgroundColor: '#161B22', color: '#8B949E', border: '1px solid #30363D' }}
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              color: 'rgba(255,255,255,0.5)',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+            }}
           >
             <Upload size={14} />
             <span className="hidden sm:inline">Import CSV</span>
@@ -75,8 +97,11 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150"
-            style={{ background: 'linear-gradient(135deg, #00FF94, #00D4FF)', color: '#0F1117' }}
+            className="btn-gradient-glow flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200"
+            style={{
+              background: 'linear-gradient(135deg, #00FF94, #00D4FF)',
+              color: '#080C14',
+            }}
           >
             <Plus size={14} strokeWidth={2.5} />
             <span className="hidden sm:inline">Add Holding</span>

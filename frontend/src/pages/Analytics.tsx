@@ -4,6 +4,13 @@ import { useSectorExposure, useGeoExposure } from '../hooks/useExposure';
 import { SectorPieChart } from '../components/charts/SectorPieChart';
 import { GeographicChart } from '../components/charts/GeographicChart';
 
+const CARD_STYLE = {
+  background: 'rgba(13,17,23,0.8)',
+  border: '1px solid rgba(255,255,255,0.06)',
+  backdropFilter: 'blur(8px)',
+  boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+};
+
 function ChartCard({
   title,
   icon: Icon,
@@ -18,8 +25,7 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl p-6"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+    <div className="card rounded-xl p-6" style={CARD_STYLE}>
       <div className="flex items-center gap-2 mb-5">
         <Icon size={15} color="#00D4FF" />
         <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>{title}</h2>
@@ -27,14 +33,14 @@ function ChartCard({
 
       {isEmpty ? (
         <div className="flex items-center justify-center h-40">
-          <p className="text-sm" style={{ color: '#8B949E' }}>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Add holdings to see exposure breakdown
           </p>
         </div>
       ) : isLoading ? (
         <div className="flex items-center justify-center h-40">
           <div className="w-6 h-6 rounded-full border-2 animate-spin"
-            style={{ borderColor: '#30363D', borderTopColor: '#00D4FF' }} />
+            style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#00D4FF' }} />
         </div>
       ) : children}
     </div>
@@ -45,13 +51,13 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
   const radius = 36;
   const circumference = 2 * Math.PI * radius;
   const progress = (score / 100) * circumference;
-  const color = score >= 75 ? '#00FF94' : score >= 55 ? '#F59E0B' : score >= 35 ? '#00D4FF' : '#FF4D4D';
+  const color = score >= 75 ? '#00FF94' : score >= 55 ? '#F59E0B' : score >= 35 ? '#00D4FF' : '#FF4D6D';
 
   return (
     <div className="flex items-center gap-5">
       <div className="relative w-24 h-24 flex-shrink-0">
         <svg width="96" height="96" viewBox="0 0 96 96" className="-rotate-90">
-          <circle cx="48" cy="48" r={radius} fill="none" stroke="#1E2430" strokeWidth="8" />
+          <circle cx="48" cy="48" r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
           <circle
             cx="48" cy="48" r={radius}
             fill="none"
@@ -63,12 +69,12 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-mono text-xl font-bold" style={{ color }}>{score}</span>
-          <span className="text-xs" style={{ color: '#8B949E' }}>/100</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>/100</span>
         </div>
       </div>
       <div>
         <p className="font-semibold text-sm" style={{ color }}>{grade}</p>
-        <p className="text-xs mt-1" style={{ color: '#8B949E' }}>Diversification</p>
+        <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Diversification</p>
       </div>
     </div>
   );
@@ -86,15 +92,25 @@ export function Analytics() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold" style={{ color: '#E6EDF3' }}>Analytics</h1>
-        <p className="text-sm mt-0.5" style={{ color: '#8B949E' }}>
+        <h1
+          className="font-bold"
+          style={{
+            fontSize: '1.75rem',
+            background: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Analytics
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
           Sector and geographic exposure weighted by portfolio value
         </p>
       </div>
 
       {/* Diversification score */}
-      <div className="rounded-xl p-6"
-        style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+      <div className="card rounded-xl p-6" style={CARD_STYLE}>
         <div className="flex items-center gap-2 mb-5">
           <TrendingUp size={15} color="#00FF94" />
           <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>
@@ -103,12 +119,12 @@ export function Analytics() {
         </div>
 
         {isEmpty ? (
-          <p className="text-sm" style={{ color: '#8B949E' }}>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Add holdings to see your diversification score
           </p>
         ) : sectorLoading ? (
           <div className="w-6 h-6 rounded-full border-2 animate-spin"
-            style={{ borderColor: '#30363D', borderTopColor: '#00FF94' }} />
+            style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#00FF94' }} />
         ) : div ? (
           <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
             <ScoreRing score={div.score} grade={div.grade} />
@@ -143,9 +159,8 @@ export function Analytics() {
         </ChartCard>
       </div>
 
-      {/* Top holdings note */}
       {!isEmpty && (
-        <p className="text-xs" style={{ color: '#8B949E' }}>
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
           Sector and geographic exposure derived from fund compositions based on the latest available ETF factsheet data.
           Blended by cost-basis weight across your {holdings.length} holding{holdings.length !== 1 ? 's' : ''}.
         </p>
@@ -155,13 +170,23 @@ export function Analytics() {
 }
 
 function SubScore({ label, value, hint }: { label: string; value: number; hint: string }) {
-  const color = value >= 75 ? '#00FF94' : value >= 55 ? '#F59E0B' : value >= 35 ? '#00D4FF' : '#FF4D4D';
+  const color = value >= 75 ? '#00FF94' : value >= 55 ? '#F59E0B' : value >= 35 ? '#00D4FF' : '#FF4D6D';
   return (
-    <div className="rounded-lg p-3"
-      style={{ backgroundColor: '#0F1117', border: '1px solid #30363D' }}>
-      <p className="text-xs font-medium" style={{ color: '#8B949E' }}>{label}</p>
-      <p className="font-mono text-lg font-bold mt-0.5" style={{ color }}>{value}</p>
-      <p className="text-xs mt-1" style={{ color: '#8B949E' }}>{hint}</p>
+    <div
+      className="rounded-lg p-3"
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
+      <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
+      <p
+        className="font-mono text-lg font-bold mt-0.5"
+        style={{ color, fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        {value}
+      </p>
+      <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{hint}</p>
     </div>
   );
 }

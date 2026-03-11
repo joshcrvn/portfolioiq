@@ -23,9 +23,15 @@ type Period = typeof PERIODS[number]['value'];
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg px-3 py-2 text-xs"
-      style={{ backgroundColor: '#1A1F2E', border: '1px solid #30363D' }}>
-      <p className="font-mono mb-1" style={{ color: '#8B949E' }}>{label}</p>
+    <div
+      className="rounded-lg px-3 py-2 text-xs"
+      style={{
+        background: 'rgba(8,12,20,0.95)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(8px)',
+      }}
+    >
+      <p className="font-mono mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
       {payload.map((entry: any) => (
         <p key={entry.dataKey} className="font-mono font-medium"
           style={{ color: entry.color }}>
@@ -52,8 +58,15 @@ export function PerformanceChart({ holdings }: PerformanceChartProps) {
   const benchReturn = benchFinal - 100;
 
   return (
-    <div className="rounded-xl p-6"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+    <div
+      className="rounded-xl p-6"
+      style={{
+        background: 'rgba(13,17,23,0.8)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(8px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div>
@@ -69,16 +82,22 @@ export function PerformanceChart({ holdings }: PerformanceChartProps) {
         </div>
 
         {/* Period selector */}
-        <div className="flex gap-1 rounded-lg p-1"
-          style={{ backgroundColor: '#0F1117', border: '1px solid #30363D' }}>
+        <div
+          className="flex gap-1 rounded-lg p-1"
+          style={{
+            background: 'rgba(5,8,16,0.8)',
+            border: '1px solid rgba(255,255,255,0.08)',
+          }}
+        >
           {PERIODS.map(({ label, value }) => (
             <button
               key={value}
               onClick={() => setPeriod(value)}
               className="px-3 py-1 rounded text-xs font-mono font-medium transition-all"
               style={{
-                backgroundColor: period === value ? '#30363D' : 'transparent',
-                color: period === value ? '#E6EDF3' : '#8B949E',
+                backgroundColor: period === value ? 'rgba(0,255,148,0.1)' : 'transparent',
+                color: period === value ? '#00FF94' : 'rgba(255,255,255,0.4)',
+                border: period === value ? '1px solid rgba(0,255,148,0.25)' : '1px solid transparent',
               }}
             >
               {label}
@@ -91,18 +110,18 @@ export function PerformanceChart({ holdings }: PerformanceChartProps) {
       <div className="h-64">
         {holdings.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <p className="text-sm" style={{ color: '#8B949E' }}>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
               Add holdings to see performance chart
             </p>
           </div>
         ) : isLoading ? (
           <div className="h-full flex items-center justify-center">
             <div className="w-6 h-6 rounded-full border-2 animate-spin"
-              style={{ borderColor: '#30363D', borderTopColor: '#00FF94' }} />
+              style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#00FF94' }} />
           </div>
         ) : isError ? (
           <div className="h-full flex items-center justify-center">
-            <p className="text-sm" style={{ color: '#FF4D4D' }}>
+            <p className="text-sm" style={{ color: '#FF4D6D' }}>
               Failed to load performance data
             </p>
           </div>

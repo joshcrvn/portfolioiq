@@ -7,6 +7,13 @@ import { useAnimatedCounter } from '../hooks/useAnimatedCounter';
 import { CorrelationHeatmap } from '../components/charts/CorrelationHeatmap';
 import { MonteCarloChart } from '../components/charts/MonteCarloChart';
 
+const CARD_STYLE = {
+  background: 'rgba(13,17,23,0.8)',
+  border: '1px solid rgba(255,255,255,0.06)',
+  backdropFilter: 'blur(8px)',
+  boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+};
+
 // ── Period selector ────────────────────────────────────────────────────────────
 
 const PERIODS = ['1mo', '3mo', '6mo', '1y', '3y'] as const;
@@ -38,33 +45,49 @@ function MetricCard({
   formatter: (n: number) => string;
 }) {
   const animated = useAnimatedCounter(rawValue);
-  const glowColor = color + '30';
+  const glowColor = color + '33';
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.07, ease: 'easeOut' }}
-      whileHover={{ boxShadow: `0 0 0 1px ${glowColor}, 0 4px 20px ${glowColor}` }}
-      className="rounded-xl p-5 transition-shadow duration-300 cursor-default"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
+      whileHover={{
+        borderColor: `rgba(0,255,148,0.2)`,
+        boxShadow: `0 4px 24px rgba(0,0,0,0.4), 0 0 20px ${glowColor}`,
+      }}
+      className="rounded-xl p-5 cursor-default"
+      style={CARD_STYLE}
     >
       <div className="flex items-center gap-2 mb-3">
         <Icon size={14} color={iconColor} />
-        <p className="text-xs font-medium" style={{ color: '#8B949E' }}>{label}</p>
+        <p
+          className="font-medium tracking-[0.1em] uppercase"
+          style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}
+        >
+          {label}
+        </p>
       </div>
-      <p className="font-mono text-2xl font-bold" style={{ color }}>{formatter(animated)}</p>
-      {sub && <p className="text-xs mt-1" style={{ color: '#8B949E' }}>{sub}</p>}
+      <p
+        className="font-bold"
+        style={{
+          fontSize: '1.5rem',
+          color,
+          fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+        }}
+      >
+        {formatter(animated)}
+      </p>
+      {sub && <p className="text-xs mt-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{sub}</p>}
     </motion.div>
   );
 }
 
 function LoadingCard() {
   return (
-    <div className="rounded-xl p-5 animate-pulse"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
-      <div className="h-3 rounded mb-3" style={{ backgroundColor: '#30363D', width: '60%' }} />
-      <div className="h-7 rounded" style={{ backgroundColor: '#30363D', width: '50%' }} />
+    <div className="rounded-xl p-5 animate-pulse" style={CARD_STYLE}>
+      <div className="h-3 rounded mb-3" style={{ backgroundColor: 'rgba(255,255,255,0.06)', width: '60%' }} />
+      <div className="h-7 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.06)', width: '50%' }} />
     </div>
   );
 }
@@ -78,8 +101,7 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl p-6"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+    <div className="card rounded-xl p-6" style={CARD_STYLE}>
       <div className="flex items-center gap-2 mb-5">
         <Icon size={15} color={iconColor} />
         <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>{title}</h2>
@@ -103,22 +125,22 @@ function sharpeColor(v: number): string {
   if (v >= 1.5) return '#00FF94';
   if (v >= 0.5) return '#F59E0B';
   if (v >= 0)   return '#00D4FF';
-  return '#FF4D4D';
+  return '#FF4D6D';
 }
 
-function varColor(): string { return '#FF4D4D'; }
-function drawdownColor(): string { return '#FF4D4D'; }
+function varColor(): string { return '#FF4D6D'; }
+function drawdownColor(): string { return '#FF4D6D'; }
 
 function betaColor(v: number): string {
-  if (v < 0.8)  return '#00D4FF'; // low beta
-  if (v <= 1.2) return '#F59E0B'; // market-like
-  return '#FF4D4D';               // high beta
+  if (v < 0.8)  return '#00D4FF';
+  if (v <= 1.2) return '#F59E0B';
+  return '#FF4D6D';
 }
 
 function volColor(v: number): string {
   if (v < 0.10) return '#00FF94';
   if (v < 0.20) return '#F59E0B';
-  return '#FF4D4D';
+  return '#FF4D6D';
 }
 
 // ── Main page ──────────────────────────────────────────────────────────────────
@@ -135,24 +157,41 @@ export function RiskMetrics() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-bold" style={{ color: '#E6EDF3' }}>Risk Metrics</h1>
-          <p className="text-sm mt-0.5" style={{ color: '#8B949E' }}>
+          <h1
+            className="font-bold"
+            style={{
+              fontSize: '1.75rem',
+              background: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Risk Metrics
+          </h1>
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Portfolio risk statistics computed from historical daily returns
           </p>
         </div>
 
         {/* Period selector */}
         {!isEmpty && (
-          <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+          <div
+            className="flex gap-1 rounded-lg p-1"
+            style={{
+              background: 'rgba(13,17,23,0.8)',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+          >
             {PERIODS.map((p) => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
-                className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
+                className="px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150"
                 style={{
-                  backgroundColor: period === p ? '#21262D' : 'transparent',
-                  color: period === p ? '#E6EDF3' : '#8B949E',
-                  border: period === p ? '1px solid #30363D' : '1px solid transparent',
+                  backgroundColor: period === p ? 'rgba(0,255,148,0.1)' : 'transparent',
+                  color: period === p ? '#00FF94' : 'rgba(255,255,255,0.4)',
+                  border: period === p ? '1px solid rgba(0,255,148,0.25)' : '1px solid transparent',
                 }}
               >
                 {PERIOD_LABELS[p]}
@@ -164,10 +203,12 @@ export function RiskMetrics() {
 
       {/* Empty state */}
       {isEmpty && (
-        <div className="rounded-xl p-10 flex flex-col items-center gap-3"
-          style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
-          <ShieldAlert size={32} color="#8B949E" />
-          <p className="text-sm" style={{ color: '#8B949E' }}>
+        <div
+          className="rounded-xl p-10 flex flex-col items-center gap-3"
+          style={CARD_STYLE}
+        >
+          <ShieldAlert size={32} color="rgba(255,255,255,0.3)" />
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Add holdings to see portfolio risk metrics
           </p>
         </div>
@@ -207,7 +248,7 @@ export function RiskMetrics() {
                   rawValue={data.maxDrawdown}
                   sub="Worst peak-to-trough loss"
                   color={drawdownColor()}
-                  iconColor="#FF4D4D"
+                  iconColor="#FF4D6D"
                   index={2}
                   formatter={(n) => pct(n)}
                 />
@@ -227,7 +268,7 @@ export function RiskMetrics() {
                   rawValue={data.var95}
                   sub="1-day loss (historical)"
                   color={varColor()}
-                  iconColor="#FF4D4D"
+                  iconColor="#FF4D6D"
                   index={4}
                   formatter={(n) => pct(n)}
                 />
@@ -237,7 +278,7 @@ export function RiskMetrics() {
                   rawValue={data.mcVar95}
                   sub="1-day loss (Monte Carlo)"
                   color={varColor()}
-                  iconColor="#FF4D4D"
+                  iconColor="#FF4D6D"
                   index={5}
                   formatter={(n) => pct(n)}
                 />
@@ -251,7 +292,7 @@ export function RiskMetrics() {
               {isLoading ? (
                 <div className="flex items-center justify-center h-40">
                   <div className="w-6 h-6 rounded-full border-2 animate-spin"
-                    style={{ borderColor: '#30363D', borderTopColor: '#00D4FF' }} />
+                    style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#00D4FF' }} />
                 </div>
               ) : data ? (
                 <MonteCarloChart data={data.monteCarlo} nDays={data.mcDays} />
@@ -262,12 +303,12 @@ export function RiskMetrics() {
               {isLoading ? (
                 <div className="flex items-center justify-center h-40">
                   <div className="w-6 h-6 rounded-full border-2 animate-spin"
-                    style={{ borderColor: '#30363D', borderTopColor: '#A78BFA' }} />
+                    style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#A78BFA' }} />
                 </div>
               ) : data ? (
                 data.correlations.tickers.length < 2 ? (
                   <div className="flex items-center justify-center h-40">
-                    <p className="text-sm text-center" style={{ color: '#8B949E' }}>
+                    <p className="text-sm text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
                       Add at least 2 holdings to see correlation data
                     </p>
                   </div>
@@ -279,7 +320,7 @@ export function RiskMetrics() {
           </div>
 
           {/* Footnote */}
-          <p className="text-xs" style={{ color: '#8B949E' }}>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
             Metrics computed from {period} of daily log-returns, weighted by cost basis.
             VaR figures represent estimated 1-day losses at 95 % confidence.
             Monte Carlo uses 500 simulated paths over the next 63 trading days (≈3 months).

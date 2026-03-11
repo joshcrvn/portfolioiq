@@ -2,15 +2,15 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #0F1117;
-  --bg-secondary: #161B22;
-  --bg-card: #1A1F2E;
+  --bg-primary: #080C14;
+  --bg-secondary: #0D1117;
+  --bg-card: #0D1117;
   --accent-green: #00FF94;
   --accent-cyan: #00D4FF;
-  --accent-red: #FF4D4D;
+  --accent-red: #FF4D6D;
   --text-primary: #E6EDF3;
   --text-secondary: #8B949E;
-  --border: #30363D;
+  --border: rgba(255, 255, 255, 0.06);
 }
 
 * {
@@ -27,8 +27,36 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Deep background gradient orbs + fine dot grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 85% 5%, rgba(0, 212, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 92%, rgba(0, 255, 148, 0.03) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='0.5' cy='0.5' r='0.5' fill='rgba(255%2C255%2C255%2C0.04)'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 100% 100%, 24px 24px;
+}
+
 .font-mono {
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+}
+
+/* ── Premium card glass style ─────────────────────────────────────────────── */
+.card {
+  background: rgba(13, 17, 23, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  border-radius: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  border-color: rgba(0, 255, 148, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 255, 148, 0.08);
 }
 
 /* Custom scrollbar */
@@ -39,7 +67,7 @@ body {
   background: var(--bg-secondary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
 
@@ -51,7 +79,7 @@ body {
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
 }
 .glow-red {
-  box-shadow: 0 0 20px rgba(255, 77, 77, 0.15);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.15);
 }
 
 /* Fade in animation */
@@ -63,33 +91,35 @@ body {
   animation: fadeIn 0.3s ease forwards;
 }
 
-/* Number counter animation */
-@keyframes countUp {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 /* Landing page animated grid lines */
 @keyframes gridDrift {
-  0%   { background-position: 0 0; }
-  100% { background-position: 64px 64px; }
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 64px 64px, 64px 64px; }
 }
 
 /* Sidebar active nav item — gradient glow pulse */
 @keyframes navGlowPulse {
   0%, 100% {
-    box-shadow: 0 0 0 1px rgba(0, 255, 148, 0.35),
-                inset 2px 0 0 0 #00FF94,
-                0 0 12px rgba(0, 255, 148, 0.08);
+    box-shadow: inset 2px 0 0 0 #00FF94, 0 0 12px rgba(0, 255, 148, 0.08);
   }
   50% {
-    box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.35),
-                inset 2px 0 0 0 #00D4FF,
-                0 0 16px rgba(0, 212, 255, 0.12);
+    box-shadow: inset 2px 0 0 0 #00D4FF, 0 0 16px rgba(0, 212, 255, 0.12);
   }
 }
 .nav-active-glow {
   animation: navGlowPulse 3s ease-in-out infinite;
+}
+
+/* Navbar live dot — scale + opacity pulse */
+@keyframes liveDotPulse {
+  0%, 100% { transform: scale(1);   opacity: 1;   box-shadow: 0 0 6px rgba(0, 255, 148, 0.8); }
+  50%       { transform: scale(1.4); opacity: 0.4; box-shadow: 0 0 2px rgba(0, 255, 148, 0.3); }
+}
+
+/* Add Holding button hover glow */
+.btn-gradient-glow:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 16px rgba(0, 255, 148, 0.35);
 }
 
 /* Respect prefers-reduced-motion for all animations */
@@ -99,12 +129,6 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Navbar live indicator pulse */
-@keyframes livePulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(0,255,148,0.8); }
-  50%       { opacity: 0.4; box-shadow: 0 0 2px rgba(0,255,148,0.3); }
 }
 
 /* tsParticles canvas — fixed full-screen behind all app content */

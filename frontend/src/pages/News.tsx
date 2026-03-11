@@ -37,14 +37,23 @@ function SentimentBadge({ sentiment }: { sentiment: NewsItem['sentiment'] }) {
 function ArticleCard({ article }: { article: NewsItem }) {
   return (
     <div
-      className="rounded-xl p-5 flex flex-col gap-3 hover:border-opacity-60 transition-colors"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
+      className="card rounded-xl p-5 flex flex-col gap-3 transition-all duration-200"
+      style={{
+        background: 'rgba(13,17,23,0.8)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(8px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+      }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
           <span
             className="text-xs font-mono font-semibold px-2 py-0.5 rounded"
-            style={{ backgroundColor: '#21262D', color: '#00D4FF', border: '1px solid #30363D' }}
+            style={{
+              backgroundColor: 'rgba(0,212,255,0.08)',
+              color: '#00D4FF',
+              border: '1px solid rgba(0,212,255,0.25)',
+            }}
           >
             {article.ticker === 'GLOBAL' ? 'MARKET' : article.ticker}
           </span>
@@ -75,11 +84,14 @@ function ArticleCard({ article }: { article: NewsItem }) {
         </p>
       </div>
 
-      <div className="flex items-center gap-2 mt-auto pt-1" style={{ borderTop: '1px solid #21262D' }}>
-        <span className="text-xs font-medium" style={{ color: '#8B949E' }}>{article.source}</span>
-        <span style={{ color: '#30363D' }}>·</span>
-        <Clock size={11} color="#8B949E" />
-        <span className="text-xs" style={{ color: '#8B949E' }}>{timeAgo(article.publishedAt)}</span>
+      <div
+        className="flex items-center gap-2 mt-auto pt-1"
+        style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+      >
+        <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>{article.source}</span>
+        <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+        <Clock size={11} color="rgba(255,255,255,0.3)" />
+        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{timeAgo(article.publishedAt)}</span>
       </div>
     </div>
   );
@@ -87,17 +99,22 @@ function ArticleCard({ article }: { article: NewsItem }) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-xl p-5 animate-pulse"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+    <div
+      className="rounded-xl p-5 animate-pulse"
+      style={{
+        background: 'rgba(13,17,23,0.8)',
+        border: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
       <div className="flex gap-2 mb-3">
-        <div className="h-5 w-16 rounded" style={{ backgroundColor: '#21262D' }} />
-        <div className="h-5 w-16 rounded-full" style={{ backgroundColor: '#21262D' }} />
+        <div className="h-5 w-16 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }} />
+        <div className="h-5 w-16 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }} />
       </div>
-      <div className="h-4 w-full rounded mb-2" style={{ backgroundColor: '#21262D' }} />
-      <div className="h-4 w-3/4 rounded mb-3" style={{ backgroundColor: '#21262D' }} />
-      <div className="h-3 w-full rounded mb-1.5" style={{ backgroundColor: '#1A1F2E' }} />
-      <div className="h-3 w-5/6 rounded mb-1.5" style={{ backgroundColor: '#1A1F2E' }} />
-      <div className="h-3 w-4/6 rounded" style={{ backgroundColor: '#1A1F2E' }} />
+      <div className="h-4 w-full rounded mb-2" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }} />
+      <div className="h-4 w-3/4 rounded mb-3" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }} />
+      <div className="h-3 w-full rounded mb-1.5" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }} />
+      <div className="h-3 w-5/6 rounded mb-1.5" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }} />
+      <div className="h-3 w-4/6 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }} />
     </div>
   );
 }
@@ -127,8 +144,19 @@ export function News() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-bold" style={{ color: '#E6EDF3' }}>News</h1>
-          <p className="text-sm mt-0.5" style={{ color: '#8B949E' }}>
+          <h1
+            className="font-bold"
+            style={{
+              fontSize: '1.75rem',
+              background: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            News
+          </h1>
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Financial news relevant to your holdings
           </p>
         </div>
@@ -151,10 +179,17 @@ export function News() {
 
       {/* Empty state */}
       {isEmpty && (
-        <div className="rounded-xl p-10 flex flex-col items-center gap-3"
-          style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
-          <Newspaper size={32} color="#8B949E" />
-          <p className="text-sm" style={{ color: '#8B949E' }}>
+        <div
+          className="rounded-xl p-10 flex flex-col items-center gap-3"
+          style={{
+            background: 'rgba(13,17,23,0.8)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(8px)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+          }}
+        >
+          <Newspaper size={32} color="rgba(255,255,255,0.3)" />
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Add holdings to see relevant news
           </p>
         </div>
@@ -187,9 +222,14 @@ export function News() {
             ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
             : filtered.length === 0
               ? (
-                <div className="col-span-full rounded-xl p-8 flex items-center justify-center"
-                  style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
-                  <p className="text-sm" style={{ color: '#8B949E' }}>No articles found for {filter}</p>
+                <div
+                  className="col-span-full rounded-xl p-8 flex items-center justify-center"
+                  style={{
+                    background: 'rgba(13,17,23,0.8)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                  }}
+                >
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>No articles found for {filter}</p>
                 </div>
               )
               : filtered.map((a) => <ArticleCard key={a.id} article={a} />)
@@ -198,7 +238,7 @@ export function News() {
       )}
 
       {!isEmpty && !isLoading && articles && (
-        <p className="text-xs" style={{ color: '#8B949E' }}>
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
           {articles.length} article{articles.length !== 1 ? 's' : ''} ·
           Refreshes every 10 minutes · Sentiment scored by keyword analysis
         </p>

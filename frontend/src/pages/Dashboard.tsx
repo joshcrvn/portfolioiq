@@ -28,8 +28,8 @@ function SummaryCard({
   index: number;
   formatter: (n: number) => string;
 }) {
-  const color = isPositive === undefined ? '#00D4FF' : isPositive ? '#00FF94' : '#FF4D4D';
-  const glowColor = isPositive === undefined ? 'rgba(0,212,255,0.25)' : isPositive ? 'rgba(0,255,148,0.25)' : 'rgba(255,77,77,0.25)';
+  const color = isPositive === undefined ? '#00D4FF' : isPositive ? '#00FF94' : '#FF4D6D';
+  const glowColor = isPositive === undefined ? 'rgba(0,212,255,0.2)' : isPositive ? 'rgba(0,255,148,0.2)' : 'rgba(255,77,109,0.2)';
 
   const animatedValue = useAnimatedCounter(rawValue);
   const animatedSub   = useAnimatedCounter(subValue ?? 0);
@@ -39,24 +39,51 @@ function SummaryCard({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08, ease: 'easeOut' }}
-      whileHover={{ boxShadow: `0 0 0 1px ${glowColor}, 0 4px 24px ${glowColor}` }}
-      className="rounded-xl p-6 transition-shadow duration-300 cursor-default"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}
+      whileHover={{
+        borderColor: `rgba(0,255,148,0.2)`,
+        boxShadow: `0 4px 24px rgba(0,0,0,0.4), 0 0 20px ${glowColor}`,
+      }}
+      className="rounded-xl p-6 cursor-default"
+      style={{
+        background: 'rgba(13,17,23,0.8)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(8px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+        transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+      }}
     >
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs font-medium tracking-wider" style={{ color: '#8B949E' }}>
+        <span
+          className="font-medium tracking-[0.12em] uppercase"
+          style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)' }}
+        >
           {label}
         </span>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ backgroundColor: `${color}18` }}>
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{ backgroundColor: `${color}18` }}
+        >
           <Icon size={16} color={color} />
         </div>
       </div>
-      <div className="font-mono text-xl font-semibold" style={{ color: '#E6EDF3' }}>
+      <div
+        className="font-mono font-bold"
+        style={{
+          fontSize: '1.5rem',
+          color: '#E6EDF3',
+          fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+        }}
+      >
         {formatter(animatedValue)}
       </div>
       {subValue !== undefined && (
-        <div className="font-mono text-sm mt-1" style={{ color: isPositive === undefined ? '#8B949E' : color }}>
+        <div
+          className="font-mono text-sm mt-1.5"
+          style={{
+            color: isPositive === undefined ? 'rgba(255,255,255,0.4)' : color,
+            fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+          }}
+        >
           {formatPercent(animatedSub)}{subSuffix ?? ''}
         </div>
       )}
@@ -73,8 +100,21 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold" style={{ color: '#E6EDF3' }}>Dashboard</h1>
-        <p className="text-sm mt-0.5" style={{ color: '#8B949E' }}>Your portfolio at a glance</p>
+        <h1
+          className="font-bold"
+          style={{
+            fontSize: '1.75rem',
+            background: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Dashboard
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          Your portfolio at a glance
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -119,11 +159,22 @@ export function Dashboard() {
       {/* Holdings Table */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>Holdings</h2>
+          <h2
+            className="font-semibold"
+            style={{ fontSize: '1rem', color: '#E6EDF3' }}
+          >
+            Holdings
+          </h2>
           <button
             onClick={() => refetch()}
-            className="text-xs px-2 py-1 rounded"
-            style={{ color: '#8B949E', backgroundColor: '#161B22', border: '1px solid #30363D' }}
+            className="text-xs px-3 py-1.5 rounded-lg transition-all duration-150"
+            style={{
+              color: 'rgba(255,255,255,0.4)',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; }}
           >
             Refresh
           </button>

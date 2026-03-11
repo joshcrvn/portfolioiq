@@ -50,8 +50,15 @@ function AddAlertForm({ currentPrices }: { currentPrices: Record<string, number>
   const currentPrice = currentPrices[ticker] ?? 0;
 
   return (
-    <div className="rounded-xl p-6"
-      style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+    <div
+      className="rounded-xl p-6"
+      style={{
+        background: 'rgba(13,17,23,0.8)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(8px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+      }}
+    >
       <div className="flex items-center gap-2 mb-5">
         <Plus size={15} color="#00FF94" />
         <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>Add Alert</h2>
@@ -67,8 +74,8 @@ function AddAlertForm({ currentPrices }: { currentPrices: Record<string, number>
               onChange={(e) => setTicker(e.target.value)}
               className="w-full rounded-lg px-3 py-2.5 text-sm font-mono outline-none"
               style={{
-                backgroundColor: '#0F1117',
-                border: '1px solid #30363D',
+                backgroundColor: '#050810',
+                border: '1px solid rgba(255,255,255,0.08)',
                 color: '#E6EDF3',
               }}
             >
@@ -83,7 +90,7 @@ function AddAlertForm({ currentPrices }: { currentPrices: Record<string, number>
               onChange={(e) => setTicker(e.target.value.toUpperCase())}
               placeholder="e.g. VWRL"
               className="w-full rounded-lg px-3 py-2.5 text-sm font-mono outline-none"
-              style={{ backgroundColor: '#0F1117', border: '1px solid #30363D', color: '#E6EDF3' }}
+              style={{ backgroundColor: '#050810', border: '1px solid rgba(255,255,255,0.08)', color: '#E6EDF3' }}
             />
           )}
           {currentPrice > 0 && (
@@ -127,7 +134,7 @@ function AddAlertForm({ currentPrices }: { currentPrices: Record<string, number>
             step="0.01"
             min="0.01"
             className="w-full rounded-lg px-3 py-2.5 text-sm font-mono outline-none"
-            style={{ backgroundColor: '#0F1117', border: '1px solid #30363D', color: '#E6EDF3' }}
+            style={{ backgroundColor: '#050810', border: '1px solid rgba(255,255,255,0.08)', color: '#E6EDF3' }}
           />
         </div>
 
@@ -175,20 +182,24 @@ function AlertRow({
     <div
       className="rounded-lg px-4 py-3.5 flex items-center gap-4"
       style={{
-        backgroundColor: triggered ? 'rgba(255,77,77,0.06)' : '#0F1117',
-        border: `1px solid ${triggered ? '#FF4D4D' : '#30363D'}`,
+        background: triggered ? 'rgba(255,77,109,0.06)' : 'rgba(255,255,255,0.02)',
+        border: `1px solid ${triggered ? 'rgba(255,77,109,0.5)' : 'rgba(255,255,255,0.06)'}`,
         transition: 'border-color 0.2s',
       }}
     >
       {/* Triggered indicator */}
       {triggered && (
-        <AlertTriangle size={15} color="#FF4D4D" className="flex-shrink-0" />
+        <AlertTriangle size={15} color="#FF4D6D" className="flex-shrink-0" />
       )}
 
       {/* Ticker */}
       <span
         className="font-mono text-xs font-semibold px-2 py-0.5 rounded flex-shrink-0"
-        style={{ backgroundColor: '#21262D', color: '#00D4FF', border: '1px solid #30363D' }}
+        style={{
+          backgroundColor: 'rgba(0,255,148,0.1)',
+          color: '#00FF94',
+          border: '1px solid rgba(0,255,148,0.3)',
+        }}
       >
         {alert.ticker}
       </span>
@@ -276,8 +287,19 @@ export function Alerts() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold" style={{ color: '#E6EDF3' }}>Price Alerts</h1>
-        <p className="text-sm mt-0.5" style={{ color: '#8B949E' }}>
+        <h1
+          className="font-bold"
+          style={{
+            fontSize: '1.75rem',
+            background: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Price Alerts
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
           Get notified when holdings cross your target prices
         </p>
       </div>
@@ -290,8 +312,15 @@ export function Alerts() {
 
         {/* Alert list */}
         <div className="xl:col-span-2">
-          <div className="rounded-xl p-6"
-            style={{ backgroundColor: '#161B22', border: '1px solid #30363D' }}>
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: 'rgba(13,17,23,0.8)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+            }}
+          >
             <div className="flex items-center justify-between gap-2 mb-5">
               <div className="flex items-center gap-2">
                 <Bell size={15} color="#F59E0B" />
@@ -301,7 +330,7 @@ export function Alerts() {
                 {alerts.length > 0 && (
                   <span
                     className="text-xs font-mono px-1.5 py-0.5 rounded"
-                    style={{ backgroundColor: '#21262D', color: '#8B949E' }}
+                    style={{ backgroundColor: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.4)' }}
                   >
                     {alerts.length}
                   </span>
