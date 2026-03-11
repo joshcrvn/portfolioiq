@@ -215,6 +215,26 @@ _FALLBACK_SECTOR = {'Diversified': 1.0}
 _FALLBACK_GEO    = {'Global': 1.0}
 
 
+def _lookup(compositions: dict[str, dict[str, float]], ticker: str, fallback: dict[str, float]) -> dict[str, float]:
+    """
+    Look up a ticker in the compositions table, trying multiple forms:
+      1. Exact uppercase (e.g. 'VWRL.L')
+      2. With '.L' appended (e.g. 'VWRL' -> 'VWRL.L')
+      3. With '.L' stripped (e.g. 'VWRL.L' -> 'VWRL')
+    This handles the case where the user stores 'VWRL' but the table key is 'VWRL.L'.
+    """
+    t = ticker.upper()
+    if t in compositions:
+        return compositions[t]
+    with_suffix = t + '.L'
+    if with_suffix in compositions:
+        return compositions[with_suffix]
+    without_suffix = t.removesuffix('.L')
+    if without_suffix in compositions:
+        return compositions[without_suffix]
+    return fallback
+
+
 def _blend(
     compositions: dict[str, dict[str, float]],
     tickers: list[str],
@@ -230,7 +250,7 @@ def _blend(
 
     blended: dict[str, float] = {}
     for i, ticker in enumerate(tickers):
-        comp = compositions.get(ticker.upper(), fallback)
+        comp = _lookup(compositions, ticker, fallback)
         for category, frac in comp.items():
             blended[category] = blended.get(category, 0.0) + frac * w[i]
 

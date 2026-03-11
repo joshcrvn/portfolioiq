@@ -5,7 +5,7 @@ PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add
 
 ## Current Status
 - Phase 3 of 6 complete
-- Last commit: `feat(analytics): add SectorPieChart, GeographicChart, and Analytics page with diversification score`
+- Last commit: `fix(analytics): handle ticker suffix mismatch in exposure service lookup`
 - Frontend builds cleanly, backend serves quotes + history + benchmark + sector/geo exposure
 
 ## Tech Stack
@@ -109,6 +109,7 @@ portfolioiq/
 
 ## Key Architectural Decisions (Phase 3 additions)
 - **Sector/geo compositions**: Hardcoded in `exposure_service.py` — covers VWRL, VWRP, VUSA, CSPX, SPY, IVV, QQQ, EQQQ, VTI, VXUS, IWDG. Unknown tickers fall back to `{Diversified: 1.0}` / `{Global: 1.0}`.
+- **Ticker suffix normalisation**: `_lookup()` helper in `exposure_service.py` tries exact match → with `.L` appended → without `.L`, so users can store `VWRL` or `VWRL.L` and the correct composition is always found.
 - **Diversification score**: HHI-based. Score = 40% holding concentration + 60% sector concentration, scaled 0–100. Grades: Excellent ≥75, Good ≥55, Fair ≥35, Concentrated <35.
 - **ExposureItem type**: API returns `{name, weight}` shape. Local `ExposureItem` interface in `useExposure.ts` used throughout charts (not the generic `SectorExposure`/`GeographicExposure` types from `types/index.ts`).
 - **Sector colours**: Fixed palette cycling `COLORS[]` in `SectorPieChart`. Geographic colours keyed by region name in `REGION_COLORS` record.
