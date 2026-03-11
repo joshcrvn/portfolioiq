@@ -4,8 +4,8 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 6 of 6 complete — ALL PHASES DONE
-- Last commit: `feat(phase6): polish, code splitting, deployment config, README`
+- Phase 6 of 6 complete + Premium UI Overhaul complete — ALL PHASES DONE
+- Last commit: `feat(ui): premium visual overhaul — glassmorphism cards, gradient typography, premium sidebar and navbar`
 - Frontend builds cleanly with manual chunk splitting (Recharts isolated at 391 KB gzip 114 KB)
 
 ## Tech Stack
@@ -195,8 +195,9 @@ npm run dev
 ### CSS Animations (index.css)
 - `gridDrift` — landing page moving grid lines (64px, 24s linear)
 - `navGlowPulse` — sidebar active item pulses between green (#00FF94) and cyan (#00D4FF) glow, 3s ease-in-out
-- `livePulse` — navbar live dot fades opacity + box-shadow, 2s ease-in-out
+- `liveDotPulse` — navbar/sidebar live dot: scale(1→1.4) + opacity(1→0.4), 2s ease-in-out
 - `.nav-active-glow` — applies `navGlowPulse` to active sidebar NavLinks
+- `.btn-gradient-glow:hover` — brightness(1.1) + green glow shadow on gradient buttons
 - `@media (prefers-reduced-motion: reduce)` — overrides all animation-duration to 0.01ms
 
 ### Z-index Layering
@@ -208,6 +209,49 @@ npm run dev
 ### Recharts Animations
 All charts have first-render animation via `isAnimationActive`, `animationDuration`, `animationEasing="ease-out"`. MonteCarloChart uses `isAnimationActive: true as const` (was false).
 
+## Premium Visual Overhaul (post-UI-Overhaul)
+
+### Design Language
+- **Background**: `#080C14` deep navy. `body::before` fixed pseudo-element provides: two radial gradient orbs (cyan 4% top-right, green 3% bottom-left) + SVG dot grid (1px dots, 4% opacity, 24px spacing)
+- **Color palette updates**: `--bg-primary: #080C14`, `--bg-card: #0D1117`, accent red changed to `#FF4D6D` (more vibrant pink-red)
+
+### Card System
+- All cards: `background: rgba(13,17,23,0.8)`, `border: 1px solid rgba(255,255,255,0.06)`, `backdropFilter: blur(8px)`, `boxShadow: 0 4px 24px rgba(0,0,0,0.4)`
+- Hover: border brightens to `rgba(0,255,148,0.2)`, adds `0 0 20px rgba(0,255,148,0.08)` glow
+- Applied to: SummaryCards, MetricCards, chart panels, HoldingsTable, news ArticleCards, AlertRows, all section containers
+- CSS `.card` class available for non-Framer-Motion cards; Framer Motion `whileHover` used for animated cards
+
+### Sidebar (premium)
+- Glass: `rgba(8,12,20,0.95)` + `backdropFilter: blur(20px)` + `borderRight: rgba(255,255,255,0.06)`
+- Logo: gradient text `#00FF94 → #00D4FF`, links to `/` (landing)
+- Active nav: `rgba(0,255,148,0.08)` bg + `navGlowPulse` animation + gradient indicator pip
+- Inactive nav: `rgba(255,255,255,0.45)` color → `rgba(255,255,255,0.85)` on hover
+- Bottom: divider + Home link (→ `/`) + Live Data indicator with `liveDotPulse`
+
+### Navbar (premium)
+- Glass: `rgba(8,12,20,0.9)` + `backdropFilter: blur(20px)` + border `rgba(255,255,255,0.06)`
+- LIVE dot: `liveDotPulse` keyframe (scale + opacity). LIVE text: `#00FF94` bold tracking-widest
+- Add Holding button: gradient `#00FF94 → #00D4FF`, dark text, `.btn-gradient-glow` hover class
+
+### Typography (standardised)
+- Page titles: 1.75rem, 700 weight, gradient text white → rgba(255,255,255,0.7)
+- Metric labels: 0.65rem, uppercase, letter-spacing 0.12em, color rgba(255,255,255,0.45)
+- Metric values: 1.5rem, 700 weight, JetBrains Mono
+- Muted text throughout: `rgba(255,255,255,0.4)` instead of `#8B949E`
+
+### Holdings Table
+- Ticker badge: green pill — `rgba(0,255,148,0.1)` bg, `rgba(0,255,148,0.3)` border, `#00FF94` text, `border-radius: 4px`, `padding: 2px 8px`
+- Row hover: `rgba(255,255,255,0.03)`; row border: `rgba(255,255,255,0.04)`
+- Column headers: 0.7rem, uppercase, tracking-[0.08em], `rgba(255,255,255,0.35)`
+
+### Landing Page (premium)
+- Background: `#080C14` + gradient orbs + dot grid (same as app background)
+- Wordmark: 5rem, font-weight 800, gradient `#00FF94 → #00D4FF`
+- Subtitle: JetBrains Mono, 0.875rem, `rgba(255,255,255,0.5)`
+- Buttons: "Enter App" (gradient filled) + "Load Demo" (outlined `rgba(0,255,148,0.4)`)
+- Footer: JetBrains Mono, `rgba(255,255,255,0.2)`
+- Stagger: 150ms between logo/title/subtitle/buttons
+
 ## Phase Completion Checklist
 - [x] Phase 1 — Scaffolding & Core Infrastructure
 - [x] Phase 2 — CSV Upload & Benchmarking
@@ -216,3 +260,4 @@ All charts have first-render animation via `isAnimationActive`, `animationDurati
 - [x] Phase 5 — News Feed & Price Alerts
 - [x] Phase 6 — Polish & Deployment
 - [x] UI Overhaul — Particles, Framer Motion, Landing Page, Chart Animations, Final Polish
+- [x] Premium Visual Overhaul — Glassmorphism cards, gradient typography, premium sidebar/navbar, dot-grid background
