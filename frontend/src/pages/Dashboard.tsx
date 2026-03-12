@@ -290,7 +290,7 @@ export function Dashboard() {
   const tickers = holdings.map((h) => h.ticker);
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-12">
       <div>
         <h1
           className="font-bold"

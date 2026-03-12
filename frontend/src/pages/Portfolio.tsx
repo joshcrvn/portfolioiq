@@ -111,7 +111,7 @@ export function Portfolio() {
   const div = sectorData?.diversification;
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-12">
       <div>
         <h1
           className="font-bold"
