@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, DollarSign, Activity, Layers } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, Activity, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { useAnimatedCounter } from '../hooks/useAnimatedCounter';
@@ -122,7 +122,7 @@ export function Dashboard() {
         <SummaryCard
           label="TOTAL VALUE"
           rawValue={summary.totalValue}
-          icon={DollarSign}
+          icon={Wallet}
           index={0}
           formatter={formatCurrency}
         />
