@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Outlet } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft } from 'lucide-react';
 import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
 import { ParticleBackground } from './components/layout/ParticleBackground';
@@ -42,6 +43,47 @@ function AppLayout() {
   return (
     <div className="flex min-h-screen" style={{ position: 'relative', zIndex: 1 }}>
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+
+      {/* Toggle button — fixed sibling so sidebar overflow:hidden doesn't clip it */}
+      <button
+        onClick={toggleSidebar}
+        aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        style={{
+          position: 'fixed',
+          left: sidebarWidth - 13,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: 26,
+          height: 26,
+          borderRadius: '50%',
+          background: 'rgba(0,255,148,0.12)',
+          border: '1px solid rgba(0,255,148,0.35)',
+          cursor: 'pointer',
+          boxShadow: '0 0 10px rgba(0,255,148,0.15), 0 2px 8px rgba(0,0,0,0.5)',
+          zIndex: 50,
+          color: '#00FF94',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'left 0.25s ease, background 0.15s ease, box-shadow 0.15s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(0,255,148,0.25)';
+          e.currentTarget.style.boxShadow = '0 0 16px rgba(0,255,148,0.3), 0 2px 8px rgba(0,0,0,0.5)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(0,255,148,0.12)';
+          e.currentTarget.style.boxShadow = '0 0 10px rgba(0,255,148,0.15), 0 2px 8px rgba(0,0,0,0.5)';
+        }}
+      >
+        <motion.span
+          animate={{ rotate: sidebarCollapsed ? 180 : 0 }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <ChevronLeft size={13} />
+        </motion.span>
+      </button>
       <div style={{ width: sidebarWidth, flexShrink: 0, transition: 'width 0.25s ease' }} />
       <div className="flex-1 min-w-0 flex flex-col">
         <Navbar sidebarWidth={sidebarWidth} />

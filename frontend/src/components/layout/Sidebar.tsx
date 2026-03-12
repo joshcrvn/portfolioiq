@@ -176,7 +176,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         background: 'rgba(8, 12, 20, 0.95)',
         backdropFilter: 'blur(20px)',
         borderRight: '1px solid rgba(255,255,255,0.06)',
-        overflow: 'visible',
+        overflow: 'hidden',
       }}
     >
       {/* Logo */}
@@ -237,44 +237,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           />
         ))}
       </nav>
-
-      {/* Collapse toggle button — visible green pill on right edge */}
-      <button
-        onClick={onToggle}
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        className="absolute flex items-center justify-center"
-        style={{
-          top: '50%',
-          right: -13,
-          transform: 'translateY(-50%)',
-          width: 26,
-          height: 26,
-          borderRadius: '50%',
-          background: 'rgba(0,255,148,0.12)',
-          border: '1px solid rgba(0,255,148,0.35)',
-          cursor: 'pointer',
-          boxShadow: '0 0 10px rgba(0,255,148,0.15), 0 2px 8px rgba(0,0,0,0.5)',
-          zIndex: 50,
-          color: '#00FF94',
-          transition: 'background 0.15s ease, box-shadow 0.15s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(0,255,148,0.25)';
-          e.currentTarget.style.boxShadow = '0 0 16px rgba(0,255,148,0.3), 0 2px 8px rgba(0,0,0,0.5)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(0,255,148,0.12)';
-          e.currentTarget.style.boxShadow = '0 0 10px rgba(0,255,148,0.15), 0 2px 8px rgba(0,0,0,0.5)';
-        }}
-      >
-        <motion.span
-          animate={{ rotate: collapsed ? 180 : 0 }}
-          transition={{ duration: 0.25, ease: 'easeInOut' }}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >
-          <ChevronLeft size={13} />
-        </motion.span>
-      </button>
 
       {/* Bottom section */}
       <div className="px-2 pb-4">

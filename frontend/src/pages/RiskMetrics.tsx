@@ -153,7 +153,7 @@ export function RiskMetrics() {
   const { data, isLoading } = useRiskMetrics(holdings, period);
 
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
