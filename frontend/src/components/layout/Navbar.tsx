@@ -6,6 +6,7 @@ import { CSVUploadModal } from '../portfolio/CSVUploadModal';
 interface NavbarProps {
   onRefresh?: () => void;
   isRefreshing?: boolean;
+  sidebarWidth: number;
 }
 
 function LiveIndicator() {
@@ -41,15 +42,17 @@ function formatTime(d: Date): string {
   return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
-export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
+export function Navbar({ onRefresh, isRefreshing, sidebarWidth }: NavbarProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCSVModal, setShowCSVModal] = useState(false);
 
   return (
     <>
       <header
-        className="fixed top-0 right-0 left-16 lg:left-56 h-14 flex items-center justify-between px-6 lg:px-8 z-30"
+        className="fixed top-0 right-0 h-14 flex items-center justify-between px-6 lg:px-8 z-30"
         style={{
+          left: sidebarWidth,
+          transition: 'left 0.25s ease',
           background: 'rgba(8, 12, 20, 0.9)',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(255,255,255,0.06)',
