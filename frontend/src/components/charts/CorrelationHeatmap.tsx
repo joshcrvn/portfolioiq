@@ -87,8 +87,8 @@ export function CorrelationHeatmap({ data }: CorrelationHeatmapProps) {
         ))}
       </svg>
 
-      {/* Scale legend */}
-      <div className="flex items-center justify-center gap-3 mt-3">
+      {/* Scale legend — paddingLeft: LABEL_W shifts center to align with cell grid */}
+      <div className="flex items-center justify-center gap-3 mt-3" style={{ paddingLeft: LABEL_W }}>
         <span style={{ color: '#FF4D4D', fontSize: 11 }}>−1 Negative</span>
         <div
           style={{

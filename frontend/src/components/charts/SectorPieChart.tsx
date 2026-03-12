@@ -34,7 +34,7 @@ function CustomLabel({ cx, cy, midAngle, innerRadius, outerRadius, value }: any)
   if (value < 0.04) return null; // skip tiny slices
   return (
     <text x={x} y={y} textAnchor="middle" dominantBaseline="central"
-      style={{ fontSize: 10, fill: '#8B949E', fontFamily: 'JetBrains Mono' }}>
+      style={{ fontSize: 10, fill: '#0D1117', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>
       {(value * 100).toFixed(0)}%
     </text>
   );
