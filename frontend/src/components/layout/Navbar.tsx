@@ -48,7 +48,7 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
   return (
     <>
       <header
-        className="fixed top-0 right-0 left-16 lg:left-56 h-14 flex items-center justify-between px-4 lg:px-6 z-30"
+        className="fixed top-0 right-0 left-16 lg:left-56 h-14 flex items-center justify-between px-6 lg:px-8 z-30"
         style={{
           background: 'rgba(8, 12, 20, 0.9)',
           backdropFilter: 'blur(20px)',
@@ -76,7 +76,7 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
 
           <button
             onClick={() => setShowCSVModal(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150"
+            className="flex items-center gap-2 px-5 py-1.5 rounded-lg text-sm transition-all duration-150"
             style={{
               background: 'rgba(255,255,255,0.04)',
               color: 'rgba(255,255,255,0.5)',
@@ -97,7 +97,7 @@ export function Navbar({ onRefresh, isRefreshing }: NavbarProps) {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="btn-gradient-glow flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200"
+            className="btn-gradient-glow flex items-center gap-2 px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200"
             style={{
               background: 'linear-gradient(135deg, #00FF94, #00D4FF)',
               color: '#080C14',

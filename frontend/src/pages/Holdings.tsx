@@ -5,7 +5,7 @@ export function Holdings() {
   const { liveHoldings, isLoading } = usePortfolio();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1
           className="font-bold"

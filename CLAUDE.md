@@ -5,7 +5,7 @@ PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add
 
 ## Current Status
 - Phase 6 of 6 complete + Premium UI Overhaul complete — ALL PHASES DONE
-- Last commit: `feat(ui): premium visual overhaul — glassmorphism cards, gradient typography, premium sidebar and navbar`
+- Last commit: `fix(ui): fix sidebar overlap, vertical section spacing, and button padding globally`
 - Frontend builds cleanly with manual chunk splitting (Recharts isolated at 391 KB gzip 114 KB)
 
 ## Tech Stack
@@ -154,7 +154,10 @@ portfolioiq/
 - **Add Holding**: single entry point — Navbar button only. No per-page duplicate buttons.
 - **Sidebar layout**: flex-based spacer div (`w-16 lg:w-56 flex-shrink-0`) rather than margin-left, to avoid Tailwind v4 responsive class issues.
 - **Card padding**: `p-8` on summary/metric cards. Table cells: `px-4 py-3.5`.
-- **Main content padding**: `px-8 lg:px-10 pb-8`, `paddingTop: '80px'` inline style (56px navbar + 24px gap).
+- **Main content padding**: `pl-10 pr-8 lg:pl-14 lg:pr-10 pb-8`, `paddingTop: '80px'` inline style (56px navbar + 24px gap). Asymmetric padding gives extra breathing room from sidebar edge.
+- **Navbar padding**: `px-6 lg:px-8` — ensures LiveIndicator clears the sidebar's right edge.
+- **Navbar button padding**: `px-5` minimum on all buttons (Add Holding, Import CSV) to prevent text clipping.
+- **Section spacing**: All page root wrappers use `space-y-8` (32px) for comfortable vertical breathing room between sections.
 
 ## How to Run Locally
 

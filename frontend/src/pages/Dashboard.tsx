@@ -98,7 +98,7 @@ export function Dashboard() {
   const holdings = usePortfolioStore((s) => s.holdings);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1
           className="font-bold"

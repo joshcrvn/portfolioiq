@@ -284,7 +284,7 @@ export function Alerts() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
         <h1
