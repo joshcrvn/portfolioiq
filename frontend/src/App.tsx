@@ -45,7 +45,7 @@ function AppLayout() {
       <div style={{ width: sidebarWidth, flexShrink: 0, transition: 'width 0.25s ease' }} />
       <div className="flex-1 min-w-0 flex flex-col">
         <Navbar sidebarWidth={sidebarWidth} />
-        <main className="flex-1 pl-10 pr-8 lg:pl-14 lg:pr-10 pb-8" style={{ paddingTop: '80px' }}>
+        <main className="flex-1 pl-10 pr-8 lg:pl-14 lg:pr-10 pb-10" style={{ paddingTop: '96px' }}>
           <AnimatePresence mode="wait" initial={false}>
             <div key={location.pathname}>
               <Outlet />

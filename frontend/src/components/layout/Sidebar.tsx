@@ -238,33 +238,33 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         ))}
       </nav>
 
-      {/* Collapse toggle button */}
+      {/* Collapse toggle button — visible green pill on right edge */}
       <button
         onClick={onToggle}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         className="absolute flex items-center justify-center"
         style={{
           top: '50%',
-          right: -12,
+          right: -13,
           transform: 'translateY(-50%)',
-          width: 24,
-          height: 24,
+          width: 26,
+          height: 26,
           borderRadius: '50%',
-          background: 'rgba(13,17,23,0.95)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'rgba(0,255,148,0.12)',
+          border: '1px solid rgba(0,255,148,0.35)',
           cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+          boxShadow: '0 0 10px rgba(0,255,148,0.15), 0 2px 8px rgba(0,0,0,0.5)',
           zIndex: 50,
-          color: 'rgba(255,255,255,0.5)',
-          transition: 'border-color 0.15s ease, color 0.15s ease',
+          color: '#00FF94',
+          transition: 'background 0.15s ease, box-shadow 0.15s ease',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(0,255,148,0.4)';
-          e.currentTarget.style.color = '#00FF94';
+          e.currentTarget.style.background = 'rgba(0,255,148,0.25)';
+          e.currentTarget.style.boxShadow = '0 0 16px rgba(0,255,148,0.3), 0 2px 8px rgba(0,0,0,0.5)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-          e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+          e.currentTarget.style.background = 'rgba(0,255,148,0.12)';
+          e.currentTarget.style.boxShadow = '0 0 10px rgba(0,255,148,0.15), 0 2px 8px rgba(0,0,0,0.5)';
         }}
       >
         <motion.span
@@ -272,7 +272,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           transition={{ duration: 0.25, ease: 'easeInOut' }}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
-          <ChevronLeft size={14} />
+          <ChevronLeft size={13} />
         </motion.span>
       </button>
 
