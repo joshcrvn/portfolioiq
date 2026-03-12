@@ -1,6 +1,8 @@
 import { Globe, Layers, TrendingUp } from 'lucide-react';
+import { usePortfolio } from '../hooks/usePortfolio';
 import { usePortfolioStore } from '../store/portfolioStore';
 import { useSectorExposure, useGeoExposure } from '../hooks/useExposure';
+import { HoldingsTable } from '../components/portfolio/HoldingsTable';
 import { SectorPieChart } from '../components/charts/SectorPieChart';
 import { GeographicChart } from '../components/charts/GeographicChart';
 
@@ -30,7 +32,6 @@ function ChartCard({
         <Icon size={15} color="#00D4FF" />
         <h2 className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>{title}</h2>
       </div>
-
       {isEmpty ? (
         <div className="flex items-center justify-center h-40">
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -80,7 +81,27 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
   );
 }
 
-export function Analytics() {
+function SubScore({ label, value, hint }: { label: string; value: number; hint: string }) {
+  const color = value >= 75 ? '#00FF94' : value >= 55 ? '#F59E0B' : value >= 35 ? '#00D4FF' : '#FF4D6D';
+  return (
+    <div
+      className="rounded-lg p-3"
+      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+    >
+      <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
+      <p
+        className="font-mono text-lg font-bold mt-0.5"
+        style={{ color, fontFamily: "'JetBrains Mono', monospace" }}
+      >
+        {value}
+      </p>
+      <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{hint}</p>
+    </div>
+  );
+}
+
+export function Portfolio() {
+  const { liveHoldings, isLoading } = usePortfolio();
   const holdings = usePortfolioStore((s) => s.holdings);
   const isEmpty = holdings.length === 0;
 
@@ -102,14 +123,27 @@ export function Analytics() {
             backgroundClip: 'text',
           }}
         >
-          Analytics
+          Portfolio
         </h1>
         <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Sector and geographic exposure weighted by portfolio value
+          {liveHoldings.length} position{liveHoldings.length !== 1 ? 's' : ''}
         </p>
       </div>
 
-      {/* Diversification score */}
+      {/* Holdings Table */}
+      <HoldingsTable holdings={liveHoldings} isLoading={isLoading} />
+
+      {/* Exposure Charts */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <ChartCard title="Sector Exposure" icon={Layers} isLoading={sectorLoading} isEmpty={isEmpty}>
+          {sectorData && <SectorPieChart data={sectorData.sectors} />}
+        </ChartCard>
+        <ChartCard title="Geographic Exposure" icon={Globe} isLoading={geoLoading} isEmpty={isEmpty}>
+          {geoData && <GeographicChart data={geoData.regions} />}
+        </ChartCard>
+      </div>
+
+      {/* Diversification Score */}
       <div className="card rounded-xl p-6" style={CARD_STYLE}>
         <div className="flex items-center gap-2 mb-5">
           <TrendingUp size={15} color="#00FF94" />
@@ -129,34 +163,11 @@ export function Analytics() {
           <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
             <ScoreRing score={div.score} grade={div.grade} />
             <div className="grid grid-cols-2 gap-4">
-              <SubScore label="Holdings" value={div.holdingScore}
-                hint="How evenly spread across positions" />
-              <SubScore label="Sectors" value={div.sectorScore}
-                hint="How spread across industry sectors" />
+              <SubScore label="Holdings" value={div.holdingScore} hint="How evenly spread across positions" />
+              <SubScore label="Sectors"  value={div.sectorScore}  hint="How spread across industry sectors" />
             </div>
           </div>
         ) : null}
-      </div>
-
-      {/* Charts side by side */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <ChartCard
-          title="Sector Exposure"
-          icon={Layers}
-          isLoading={sectorLoading}
-          isEmpty={isEmpty}
-        >
-          {sectorData && <SectorPieChart data={sectorData.sectors} />}
-        </ChartCard>
-
-        <ChartCard
-          title="Geographic Exposure"
-          icon={Globe}
-          isLoading={geoLoading}
-          isEmpty={isEmpty}
-        >
-          {geoData && <GeographicChart data={geoData.regions} />}
-        </ChartCard>
       </div>
 
       {!isEmpty && (
@@ -165,28 +176,6 @@ export function Analytics() {
           Blended by cost-basis weight across your {holdings.length} holding{holdings.length !== 1 ? 's' : ''}.
         </p>
       )}
-    </div>
-  );
-}
-
-function SubScore({ label, value, hint }: { label: string; value: number; hint: string }) {
-  const color = value >= 75 ? '#00FF94' : value >= 55 ? '#F59E0B' : value >= 35 ? '#00D4FF' : '#FF4D6D';
-  return (
-    <div
-      className="rounded-lg p-3"
-      style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.06)',
-      }}
-    >
-      <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
-      <p
-        className="font-mono text-lg font-bold mt-0.5"
-        style={{ color, fontFamily: "'JetBrains Mono', monospace" }}
-      >
-        {value}
-      </p>
-      <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{hint}</p>
     </div>
   );
 }
