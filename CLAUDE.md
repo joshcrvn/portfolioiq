@@ -121,7 +121,7 @@ portfolioiq/
 ## Key Architectural Decisions (Phase 5 additions)
 - **News**: `GET /api/news/feed?tickers=...`. Uses NewsAPI if `NEWSAPI_KEY` env var is set (and not the placeholder value). Otherwise returns curated mock articles covering broad market, S&P 500, NASDAQ, FTSE All-World, value ETFs etc. GLOBAL-tagged articles appear for all tickers.
 - **Sentiment scoring**: Keyword-based positive/negative word sets applied to `title + description`. No ML dependency.
-- **News mock articles**: 16 pre-authored articles with varied sentiment, realistic sources (FT, Reuters, Bloomberg, Morningstar), and ticker-keyed relevance. Timestamps computed relative to `datetime.now()` so they always appear recent.
+- **News mock articles**: 16 pre-authored articles with varied sentiment. Tickers: GLOBAL (6), CSPX (4), VWRL (4), EQQQ (1), IWDG (1), VUSA (1). Sources: FT, Bloomberg, Morningstar, WSJ, CNBC, Reuters, Goldman Sachs, Hargreaves Lansdown, AJ Bell, Trustnet, Interactive Investor, JPMorgan, BlackRock. Timestamps 1–44h ago (all within 48h). Computed relative to `datetime.now()` so always appear recent.
 - **News ticker filter**: Client-side filter tabs (All + each holding ticker). GLOBAL articles always appear in every filter.
 - **Alerts**: Entirely client-side. State lives in Zustand store (`alerts: PriceAlert[]`). Triggered detection: compare `alert.targetPrice` vs `currentPrice` from `usePortfolio` — no backend call needed per check. Sorted: triggered first → active → inactive.
 - **Alert UI**: Two-panel layout (Add form left, list right on xl). Confirm-before-delete pattern matching HoldingsTable. Active/inactive toggled via Bell/BellOff icon. Triggered alerts get red border + `AlertTriangle` icon.
@@ -152,11 +152,11 @@ portfolioiq/
 - **Add Holding**: single entry point — Navbar button only. No per-page duplicate buttons.
 - **Sidebar layout**: flex-based spacer div (inline style `width: sidebarWidth`) rather than Tailwind classes — width transitions with `0.25s ease` matching the sidebar and navbar.
 - **Sidebar collapse**: state in `AppLayout`, persisted to `localStorage` key `sidebar-collapsed`. Defaults to collapsed on `window.innerWidth < 1024` on first visit. Collapsed = 56px, Expanded = 224px.
-- **Sidebar toggle**: absolute-positioned chevron button at `right: -12px, top: 50%`. Rotates 180deg (Framer Motion) when collapsed.
+- **Sidebar toggle**: absolute-positioned at `right: -13px, top: 50%`, 26×26px circle. Styled `rgba(0,255,148,0.12)` background, `rgba(0,255,148,0.35)` border, `#00FF94` chevron, green glow shadow — always visible. Rotates 180deg (Framer Motion) when collapsed.
 - **Sidebar tooltips**: `NavItemWithTooltip` component — Framer Motion `AnimatePresence` on hover in collapsed mode. Tooltip: dark pill, green border, `rgba(13,17,23,0.95)`, slides in from x: -8 → 0.
 - **Navbar dynamic left**: `left: sidebarWidth` inline style with `transition: left 0.25s ease` replaces hardcoded `left-16 lg:left-56`.
 - **Card padding**: `p-8` on summary/metric cards. Table cells: `px-4 py-3.5`.
-- **Main content padding**: `pl-10 pr-8 lg:pl-14 lg:pr-10 pb-8`, `paddingTop: '80px'` inline style (56px navbar + 24px gap). Asymmetric padding gives extra breathing room from sidebar edge.
+- **Main content padding**: `pl-10 pr-8 lg:pl-14 lg:pr-10 pb-10`, `paddingTop: '96px'` inline style (56px navbar + 40px gap). Asymmetric padding gives extra breathing room from sidebar edge and navbar.
 - **Navbar padding**: `px-6 lg:px-8` — ensures LiveIndicator clears the sidebar's right edge.
 - **Navbar button padding**: `px-5` minimum on all buttons (Add Holding, Import CSV) to prevent text clipping.
 - **Section spacing**: All page root wrappers use `space-y-8` (32px) for comfortable vertical breathing room between sections.
