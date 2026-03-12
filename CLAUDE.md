@@ -1,12 +1,20 @@
 # PortfolioIQ — Claude Code Context
 
-## Project Summary
-PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
+## 🏁 PROJECT COMPLETE — v1.0
 
-## Current Status
-- Phase 6 of 6 complete + Premium UI Overhaul complete + Navigation Restructure — ALL DONE
-- Last commit: `feat(nav): consolidate to 4 pages — Dashboard, Portfolio, Risk, News & Alerts`
-- Frontend builds cleanly with manual chunk splitting (Recharts isolated at 391 KB gzip 114 KB)
+PortfolioIQ is feature-complete. No further development is planned. All 6 phases, the UI overhaul, premium visual overhaul, navigation restructure, and all post-launch polish are done and committed to `main`.
+
+## Project Summary
+PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, a news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
+
+## Final Status
+- All 6 phases complete
+- UI Overhaul complete (Framer Motion, particles, landing page, animations)
+- Premium Visual Overhaul complete (glassmorphism, gradient typography, premium sidebar/navbar)
+- Navigation restructure complete (collapsible sidebar, 4-page consolidation)
+- Final polish complete (section spacing, chart fixes, sidebar icon sizing, Live indicator offset)
+- Last commit: `chore: final commit — PortfolioIQ v1.0 complete`
+- Frontend builds cleanly with manual chunk splitting (Recharts isolated at 391 KB / 114 KB gzip)
 
 ## Tech Stack
 
@@ -159,7 +167,9 @@ portfolioiq/
 - **Main content padding**: `pl-10 pr-8 lg:pl-14 lg:pr-10 pb-10`, `paddingTop: '96px'` inline style (56px navbar + 40px gap). Asymmetric padding gives extra breathing room from sidebar edge and navbar.
 - **Navbar padding**: `px-6 lg:px-8` — ensures LiveIndicator clears the sidebar's right edge.
 - **Navbar button padding**: `px-5` minimum on all buttons (Add Holding, Import CSV) to prevent text clipping.
-- **Section spacing**: All page root wrappers use `space-y-8` (32px) for comfortable vertical breathing room between sections.
+- **Section spacing**: All page root wrappers use `flex flex-col gap-6` (24px). Note: `space-y-*` is unreliable in Tailwind v4 with React component children — always use `flex flex-col gap-*` instead.
+- **Sidebar icons**: 22px (up from 18px), nav item padding `py-3.5` (up from `py-2.5`) for easier touch/click targets.
+- **Live indicator offset**: `marginLeft: 10` on the `<LiveIndicator>` wrapper in Navbar shifts it 10px right of the navbar's left padding edge.
 
 ## How to Run Locally
 
@@ -278,3 +288,13 @@ All charts have first-render animation via `isAnimationActive`, `animationDurati
 - [x] Phase 6 — Polish & Deployment
 - [x] UI Overhaul — Particles, Framer Motion, Landing Page, Chart Animations, Final Polish
 - [x] Premium Visual Overhaul — Glassmorphism cards, gradient typography, premium sidebar/navbar, dot-grid background
+- [x] Navigation Restructure — Collapsible sidebar (icon-rail + tooltips), 4-page consolidation (Dashboard, Portfolio, Risk, News & Alerts)
+- [x] Post-Launch Polish — Section spacing (`flex flex-col gap-6`), news articles expanded to 16 with CSPX/VWRL coverage, sidebar backdrop-filter overflow fix, correlation heatmap legend centering, pie chart label contrast, sidebar icon sizing (22px, py-3.5), Live indicator 10px right offset
+
+## v1.0 Feature Summary
+- **Holdings**: Manual add (ticker/shares/price/currency) + Trading 212 CSV drag-drop import
+- **Dashboard**: Summary cards (Total Value, P&L, Best/Worst), Performance chart vs S&P 500, Top Holdings widget, Latest News widget, full Holdings table
+- **Portfolio**: Holdings table with live P&L, sector donut chart, geographic bar chart, HHI diversification score
+- **Risk**: Sharpe ratio, annualised volatility, max drawdown, beta, historical VaR 95%, Monte Carlo VaR 95%, Monte Carlo fan chart (500 paths, 63 days), correlation heatmap — all with 1M/3M/6M/1Y/3Y period selector
+- **News & Alerts**: Tabbed page — News feed (NewsAPI or 16 mock articles, sentiment badges, ticker filter) + Price Alerts (client-side, triggered detection, Bell/BellOff toggle)
+- **UI**: Collapsible sidebar (56↔224px), glassmorphism navbar/sidebar, tsParticles background, Framer Motion page transitions + animated counters, Bloomberg-inspired dark terminal palette

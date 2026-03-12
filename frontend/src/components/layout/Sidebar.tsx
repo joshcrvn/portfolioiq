@@ -58,7 +58,7 @@ function NavItemWithTooltip({
         to={to}
         end
         className={({ isActive }) =>
-          `flex items-center gap-3 px-2 py-2.5 rounded-lg transition-all duration-150 group ${
+          `flex items-center gap-3 px-2 py-3.5 rounded-lg transition-all duration-150 group ${
             isActive ? 'nav-active-glow' : ''
           }`
         }
@@ -85,7 +85,7 @@ function NavItemWithTooltip({
         {({ isActive }) => (
           <>
             <Icon
-              size={18}
+              size={22}
               style={{ color: isActive ? '#00FF94' : 'inherit', flexShrink: 0 }}
             />
             {!collapsed && (
@@ -130,7 +130,7 @@ function HomeLinkWithTooltip({ collapsed }: { collapsed: boolean }) {
     >
       <Link
         to="/"
-        className="flex items-center gap-3 px-2 py-2.5 rounded-lg transition-all duration-150 w-full"
+        className="flex items-center gap-3 px-2 py-3.5 rounded-lg transition-all duration-150 w-full"
         style={{
           color: 'rgba(255,255,255,0.35)',
           justifyContent: collapsed ? 'center' : undefined,
@@ -144,7 +144,7 @@ function HomeLinkWithTooltip({ collapsed }: { collapsed: boolean }) {
           e.currentTarget.style.backgroundColor = 'transparent';
         }}
       >
-        <Home size={18} style={{ flexShrink: 0 }} />
+        <Home size={22} style={{ flexShrink: 0 }} />
         {!collapsed && <span className="text-sm font-medium">Home</span>}
       </Link>
 
@@ -226,7 +226,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </Link>
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 py-4 space-y-0.5">
+      <nav className="flex-1 px-2 py-4 space-y-1">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavItemWithTooltip
             key={to}

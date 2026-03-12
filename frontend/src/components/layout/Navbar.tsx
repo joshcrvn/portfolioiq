@@ -58,7 +58,9 @@ export function Navbar({ onRefresh, isRefreshing, sidebarWidth }: NavbarProps) {
           borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}
       >
-        <LiveIndicator />
+        <div style={{ marginLeft: 10 }}>
+          <LiveIndicator />
+        </div>
 
         <div className="flex items-center gap-2">
           {onRefresh && (
