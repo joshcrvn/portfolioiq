@@ -4,8 +4,8 @@
 PortfolioIQ is a personal ETF portfolio tracker and analytics web app. Users add ETF holdings manually (ticker, shares, avg buy price, currency), see live P&L from yfinance data, and will eventually get risk analytics (Sharpe, VaR, Monte Carlo), sector/geographic exposure charts, news feed, and price alerts. Built to CV-quality standard with a Bloomberg-inspired dark terminal aesthetic.
 
 ## Current Status
-- Phase 6 of 6 complete + Premium UI Overhaul complete — ALL PHASES DONE
-- Last commit: `fix(ui): fix sidebar overlap, vertical section spacing, and button padding globally`
+- Phase 6 of 6 complete + Premium UI Overhaul complete + Navigation Restructure — ALL DONE
+- Last commit: `feat(nav): consolidate to 4 pages — Dashboard, Portfolio, Risk, News & Alerts`
 - Frontend builds cleanly with manual chunk splitting (Recharts isolated at 391 KB gzip 114 KB)
 
 ## Tech Stack
@@ -53,12 +53,10 @@ portfolioiq/
 │   │   │       ├── CorrelationHeatmap.tsx  # SVG heatmap, red–neutral–green colour scale
 │   │   │       └── MonteCarloChart.tsx     # Recharts ComposedChart, 5-percentile fan chart
 │   │   ├── pages/
-│   │   │   ├── Dashboard.tsx               # Summary cards + PerformanceChart + HoldingsTable
-│   │   │   ├── Holdings.tsx
-│   │   │   ├── Analytics.tsx               # Sector/geo charts + diversification score
+│   │   │   ├── Dashboard.tsx               # Summary cards + PerformanceChart + mini Top Holdings + mini Latest News
+│   │   │   ├── Portfolio.tsx               # Holdings table + Sector/geo charts + Diversification score
 │   │   │   ├── RiskMetrics.tsx             # Sharpe, VaR, Beta, MC chart, Correlation heatmap
-│   │   │   ├── News.tsx                    # Article cards, ticker filter tabs, sentiment badges
-│   │   │   ├── Alerts.tsx                  # Add alert form, alert list, triggered detection
+│   │   │   ├── NewsAlerts.tsx              # Tabbed page: News tab + Alerts tab (default: News)
 │   │   │   └── NotFound.tsx                # 404 catch-all page
 │   │   ├── App.tsx
 │   │   └── main.tsx
@@ -152,7 +150,11 @@ portfolioiq/
 
 ## UI Conventions (established post-Phase 1)
 - **Add Holding**: single entry point — Navbar button only. No per-page duplicate buttons.
-- **Sidebar layout**: flex-based spacer div (`w-16 lg:w-56 flex-shrink-0`) rather than margin-left, to avoid Tailwind v4 responsive class issues.
+- **Sidebar layout**: flex-based spacer div (inline style `width: sidebarWidth`) rather than Tailwind classes — width transitions with `0.25s ease` matching the sidebar and navbar.
+- **Sidebar collapse**: state in `AppLayout`, persisted to `localStorage` key `sidebar-collapsed`. Defaults to collapsed on `window.innerWidth < 1024` on first visit. Collapsed = 56px, Expanded = 224px.
+- **Sidebar toggle**: absolute-positioned chevron button at `right: -12px, top: 50%`. Rotates 180deg (Framer Motion) when collapsed.
+- **Sidebar tooltips**: `NavItemWithTooltip` component — Framer Motion `AnimatePresence` on hover in collapsed mode. Tooltip: dark pill, green border, `rgba(13,17,23,0.95)`, slides in from x: -8 → 0.
+- **Navbar dynamic left**: `left: sidebarWidth` inline style with `transition: left 0.25s ease` replaces hardcoded `left-16 lg:left-56`.
 - **Card padding**: `p-8` on summary/metric cards. Table cells: `px-4 py-3.5`.
 - **Main content padding**: `pl-10 pr-8 lg:pl-14 lg:pr-10 pb-8`, `paddingTop: '80px'` inline style (56px navbar + 24px gap). Asymmetric padding gives extra breathing room from sidebar edge.
 - **Navbar padding**: `px-6 lg:px-8` — ensures LiveIndicator clears the sidebar's right edge.
@@ -187,6 +189,18 @@ npm run dev
 - Landing page at `/` (`pages/Landing.tsx`) — full-screen hero, "Get Started" → `/app/dashboard`, "View Demo" loads preset holdings
 - All app pages moved to `/app/*` prefix via `AppLayout` parent route with `Outlet`
 - `AppLayout` renders `<Sidebar>`, spacer div, `<Navbar>`, and `<main>` with `AnimatePresence`
+
+### 4-Page Navigation Structure (post-restructure)
+| Page | Route | Content |
+|---|---|---|
+| Dashboard | `/app/dashboard` | Summary cards, perf chart, mini Top Holdings + Latest News widgets, full holdings table |
+| Portfolio | `/app/portfolio` | Full holdings table, sector/geo exposure charts, diversification score |
+| Risk | `/app/risk` | Risk metrics (Sharpe, VaR, Beta, MC, correlation) |
+| News & Alerts | `/app/news` | Tabbed: News feed tab + Alerts tab (default: News) |
+
+- `Dashboard` mini "Top Holdings": top 3 by `currentValue`, links to `/app/portfolio`
+- `Dashboard` mini "Latest News": first 3 articles from `useNews`, links to `/app/news`
+- `NewsAlerts` tab state is local (not URL-based) — always opens on News tab
 
 ### Animation Architecture
 - `ParticleBackground` (`components/layout/ParticleBackground.tsx`): module-level `engineReady` guard prevents double-init in React 18 StrictMode
